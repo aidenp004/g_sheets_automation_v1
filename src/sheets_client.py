@@ -4,6 +4,8 @@ from pathlib import Path
 
 import gspread
 from gspread.cell import Cell
+from gspread.exceptions import WorksheetNotFound
+from gspread.spreadsheet import Spreadsheet
 from gspread.worksheet import Worksheet
 
 
@@ -53,6 +55,23 @@ def open_sheet(sheet_id: str, worksheet_name: str, service_account_json: str) ->
         raise RuntimeError(
             f"Failed to open worksheet '{worksheet_name}' in sheet '{sheet_id}': {exc}"
         ) from exc
+
+
+def open_spreadsheet(sheet_id: str, service_account_json: str) -> Spreadsheet:
+    """Open a spreadsheet by ID using a service account JSON file."""
+    creds_path = Path(service_account_json).expanduser()
+    if not creds_path.exists():
+        raise FileNotFoundError(f"Service account JSON not found: {creds_path}")
+
+    try:
+        client = gspread.service_account(filename=str(creds_path))
+    except Exception as exc:
+        raise RuntimeError(f"Failed to authenticate with service account JSON: {exc}") from exc
+
+    try:
+        return client.open_by_key(sheet_id)
+    except Exception as exc:
+        raise RuntimeError(f"Failed to open sheet '{sheet_id}': {exc}") from exc
 
 
 def get_headers(ws: Worksheet) -> list[str]:
@@ -111,3 +130,64 @@ def write_row_fields(ws: Worksheet, headers: list[str], row: int, updates: dict[
 
     cells.sort(key=lambda cell: cell.col)
     ws.update_cells(cells, value_input_option="USER_ENTERED")
+
+
+def get_or_create_worksheet(
+    spreadsheet: Spreadsheet,
+    worksheet_name: str,
+    required_headers: list[str],
+    default_rows: int = 1000,
+    default_cols: int = 40,
+) -> Worksheet:
+    """
+    Open worksheet by name or create it if missing.
+    Ensures required headers exist in row 1 (missing headers are appended).
+    """
+    try:
+        ws = spreadsheet.worksheet(worksheet_name)
+    except WorksheetNotFound:
+        ws = spreadsheet.add_worksheet(
+            title=worksheet_name,
+            rows=str(max(default_rows, 2)),
+            cols=str(max(default_cols, len(required_headers) + 5)),
+        )
+        ws.update(
+            range_name="A1",
+            values=[required_headers],
+            value_input_option="RAW",
+        )
+        return ws
+
+    headers = get_headers(ws)
+    if not any(headers):
+        ws.update(
+            range_name="A1",
+            values=[required_headers],
+            value_input_option="RAW",
+        )
+        return ws
+
+    existing = [h for h in headers if h]
+    missing = [h for h in required_headers if h not in existing]
+    if missing:
+        ws.update(
+            range_name="A1",
+            values=[existing + missing],
+            value_input_option="RAW",
+        )
+    return ws
+
+
+def append_row_by_headers(ws: Worksheet, row_data: dict[str, str]) -> None:
+    """
+    Append a row by worksheet header names.
+    Unknown keys are ignored.
+    """
+    headers = get_headers(ws)
+    if not headers:
+        raise ValueError(f"Worksheet '{ws.title}' has no header row.")
+
+    values: list[str] = []
+    for header in headers:
+        values.append(str(row_data.get(header, "")))
+    ws.append_row(values, value_input_option="USER_ENTERED")

@@ -1,0 +1,101 @@
+{
+  "eval_json": {
+    "eval_id": null,
+    "asin": "B000TEST00",
+    "created_at_utc": "2026-03-24T22:11:42Z",
+    "pipeline_context": {
+      "policy_version": "",
+      "keepa_domain_id": 1,
+      "marketplace_id": "ATVPDKIKX0DER",
+      "currency": "USD"
+    },
+    "gate_decision": {
+      "qualified": true,
+      "decision": "BUY",
+      "reason": "x",
+      "reasons": [
+        "x"
+      ],
+      "recommended_qty": 1,
+      "downside_risk": "LOW",
+      "needs_human_review": false,
+      "audit_fields": {}
+    },
+    "key_metrics": {
+      "est_sales_month": null,
+      "offer_count_delta_14d": null,
+      "buy_box_90d_avg": null,
+      "buy_box_90d_low": null,
+      "amazon_buy_box_pct_90d": null,
+      "buy_box_stability": "UNSTABLE",
+      "brand": null,
+      "buy_box_range_current": null,
+      "buy_box_range_21d_low": null,
+      "buy_box_range_21d_high": null,
+      "buy_box_samples_21d": 0,
+      "buy_box_total_events_21d": 0,
+      "buy_box_relative_spread_21d": null,
+      "buy_box_range_issue": null,
+      "current_buy_box_price": null,
+      "competitive_sellers_near_bb": null,
+      "competitive_fba_sellers_near_bb": null,
+      "competitive_fbm_sellers_near_bb": null,
+      "competitive_weighted_stock_units": null,
+      "competitive_stock_known_sellers": null,
+      "competitive_stock_total_sellers": null,
+      "competitive_allowed_delta": null,
+      "competitive_ceiling_price": null,
+      "competitive_debug": null,
+      "competitive_issue": null,
+      "buy_box_fba_share_90d": null,
+      "buy_box_fbm_share_90d": null,
+      "package_weight_grams": null,
+      "missing_fields": [],
+      "source_error": null
+    },
+    "raw_history": {
+      "buy_box_price_history": [],
+      "buy_box_seller_history": []
+    },
+    "fee_context": {
+      "estimated_sell_price_mid_bb": null,
+      "buy_box_range_current": null,
+      "amazon_fees_total": null,
+      "referral_fee": null,
+      "fba_fulfillment_fee": null,
+      "fee_breakdown": {},
+      "package_weight_grams": null,
+      "inbound_shipping_rate_per_lb": 0.77,
+      "inbound_shipping_fee": null,
+      "landed_cost_per_unit": null,
+      "profit_per_unit": null,
+      "roi_percent": null,
+      "margin_percent": null,
+      "errors": []
+    },
+    "errors": [],
+    "manual_label": {
+      "my_decision": null,
+      "gate_correct": null,
+      "my_reasoning": null,
+      "gate_missed": null,
+      "expected_llm_override": null
+    }
+  },
+  "llm1_output": {
+    "status": "bypass",
+    "reason": "hard bypass condition met"
+  },
+  "llm2_output": {},
+  "final_decision": {
+    "decision": "BUY",
+    "recommended_qty": 1,
+    "downside_risk": "LOW",
+    "needs_human_review": false,
+    "reasons": [
+      "x"
+    ],
+    "audit_fields": {}
+  },
+  "timestamp_utc": "2026-03-24T22:11:42Z"
+}

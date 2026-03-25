@@ -21,9 +21,10 @@ def compute_buy_box_range(
     window_days: int = 21,
     lower_percentile: float = 20.0,
     upper_percentile: float = 80.0,
-    min_samples: int = 8,
+    min_samples: int = 4,
     max_suppressed_share: float = 0.60,
     stable_spread_threshold: float = 0.25,
+    stable_coverage_override: float = 0.85,
 ) -> BuyBoxRangeResult:
     if not raw_history:
         return BuyBoxRangeResult(
@@ -51,9 +52,6 @@ def compute_buy_box_range(
     window_events = [(ts, value_cents) for ts, value_cents in points if start < ts <= end]
     total_events = len(window_events)
 
-    valid_values_for_samples = [value for _, value in window_events if value > 0]
-    sample_count = len(valid_values_for_samples)
-
     durations: list[float] = []
     prices: list[float] = []
 
@@ -72,19 +70,10 @@ def compute_buy_box_range(
 
     valid_minutes = sum(durations)
     total_minutes = float(max(1, end - start))
+    coverage_ratio = valid_minutes / total_minutes
     suppressed_share = 1.0 - (valid_minutes / total_minutes)
+    sample_count = len(prices)
 
-    if sample_count < min_samples:
-        return BuyBoxRangeResult(
-            low=None,
-            high=None,
-            range_text=None,
-            sample_count=sample_count,
-            total_events=total_events,
-            stability="UNSTABLE",
-            relative_spread=None,
-            reason=f"insufficient buy box samples in last 21 days ({sample_count} < {min_samples})",
-        )
     if suppressed_share > max_suppressed_share:
         suppressed_pct = round(suppressed_share * 100.0, 2)
         return BuyBoxRangeResult(
@@ -107,6 +96,17 @@ def compute_buy_box_range(
             stability="UNSTABLE",
             relative_spread=None,
             reason="buy box suppressed or unavailable in last 21 days",
+        )
+    if sample_count < min_samples and coverage_ratio < stable_coverage_override:
+        return BuyBoxRangeResult(
+            low=None,
+            high=None,
+            range_text=None,
+            sample_count=sample_count,
+            total_events=total_events,
+            stability="UNSTABLE",
+            relative_spread=None,
+            reason=f"insufficient buy box samples in last 21 days ({sample_count} < {min_samples})",
         )
 
     low = round(_weighted_percentile(prices, durations, lower_percentile), 2)

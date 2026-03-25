@@ -1,0 +1,248 @@
+{
+  "eval_json": {
+    "eval_id": null,
+    "asin": "B0FVDYXQJN",
+    "created_at_utc": "2026-03-24T22:45:37Z",
+    "pipeline_context": {
+      "policy_version": "v1.0",
+      "keepa_domain_id": 1,
+      "marketplace_id": "ATVPDKIKX0DER",
+      "currency": "USD"
+    },
+    "gate_decision": {
+      "qualified": false,
+      "decision": "REJECT",
+      "reason": "ASIN is gated.; Cannot parse Buy Box Range; ROI % is missing or invalid.; Margin % is missing or invalid.; Keepa fields missing: Buy Box Range (Current).; Buy Box range issue: buy box suppressed for most of last 21 days (62.07% suppressed).",
+      "reasons": [
+        "ASIN is gated.",
+        "Cannot parse Buy Box Range",
+        "ROI % is missing or invalid.",
+        "Margin % is missing or invalid.",
+        "Keepa fields missing: Buy Box Range (Current).",
+        "Buy Box range issue: buy box suppressed for most of last 21 days (62.07% suppressed)."
+      ],
+      "recommended_qty": 0,
+      "downside_risk": "HIGH",
+      "needs_human_review": true,
+      "audit_fields": {
+        "Spike Threshold": "47.00",
+        "Spike Share %": "1.10",
+        "Effective Spike Units / Mo": "0.28",
+        "Spike ROI %": "",
+        "Spike Margin %": "",
+        "Spike Windows Count": "1",
+        "Spike Path Qualified": "NO"
+      }
+    },
+    "key_metrics": {
+      "est_sales_month": 50,
+      "offer_count_delta_14d": -1,
+      "buy_box_90d_avg": 46.99,
+      "buy_box_90d_low": 46.91,
+      "amazon_buy_box_pct_90d": 0.0,
+      "buy_box_stability": "UNSTABLE",
+      "brand": "Pok\u00e9mon",
+      "buy_box_range_current": null,
+      "buy_box_range_21d_low": null,
+      "buy_box_range_21d_high": null,
+      "buy_box_samples_21d": 5,
+      "buy_box_total_events_21d": 5,
+      "buy_box_relative_spread_21d": null,
+      "buy_box_range_issue": "buy box suppressed for most of last 21 days (62.07% suppressed)",
+      "current_buy_box_price": 46.99,
+      "competitive_sellers_near_bb": 5,
+      "competitive_fba_sellers_near_bb": 5,
+      "competitive_fbm_sellers_near_bb": 0,
+      "competitive_weighted_stock_units": 8.0,
+      "competitive_stock_known_sellers": 5,
+      "competitive_stock_total_sellers": 5,
+      "competitive_allowed_delta": 0.5,
+      "competitive_ceiling_price": 47.49,
+      "competitive_debug": "band=46.99-46.99, ext=0.50, ceiling=47.49, comp_fba=5, comp_fbm=0, comp_total=5, stock_known=5/5, weighted_stock=8.00",
+      "competitive_issue": null,
+      "buy_box_fba_share_90d": 100.0,
+      "buy_box_fbm_share_90d": 0.0,
+      "package_weight_grams": 150.0,
+      "missing_fields": [
+        "Buy Box Range (Current)"
+      ],
+      "source_error": null
+    },
+    "raw_history": {
+      "buy_box_price_history": [
+        {
+          "keepa_minutes": 7957602,
+          "timestamp_utc": "2026-02-17T02:42:00Z",
+          "price_usd": 46.99
+        },
+        {
+          "keepa_minutes": 7997736,
+          "timestamp_utc": "2026-03-16T23:36:00Z",
+          "price_usd": 46.99
+        },
+        {
+          "keepa_minutes": 8002464,
+          "timestamp_utc": "2026-03-20T06:24:00Z",
+          "price_usd": 47.0
+        },
+        {
+          "keepa_minutes": 8002596,
+          "timestamp_utc": "2026-03-20T08:36:00Z",
+          "price_usd": 46.99
+        },
+        {
+          "keepa_minutes": 8006516,
+          "timestamp_utc": "2026-03-23T01:56:00Z",
+          "price_usd": 47.0
+        },
+        {
+          "keepa_minutes": 8007060,
+          "timestamp_utc": "2026-03-23T11:00:00Z",
+          "price_usd": 46.99
+        }
+      ],
+      "buy_box_seller_history": [
+        {
+          "keepa_minutes": 7957602,
+          "timestamp_utc": "2026-02-17T02:42:00Z",
+          "seller_id": "A2RLAFC337BLAB"
+        },
+        {
+          "keepa_minutes": 7981662,
+          "timestamp_utc": "2026-03-05T19:42:00Z",
+          "seller_id": "A1GWMNQKQF7URN"
+        },
+        {
+          "keepa_minutes": 7981836,
+          "timestamp_utc": "2026-03-05T22:36:00Z",
+          "seller_id": "A2RLAFC337BLAB"
+        },
+        {
+          "keepa_minutes": 7993180,
+          "timestamp_utc": "2026-03-13T19:40:00Z",
+          "seller_id": "A35DZ5FWOQPI9J"
+        },
+        {
+          "keepa_minutes": 7993566,
+          "timestamp_utc": "2026-03-14T02:06:00Z",
+          "seller_id": "A2RLAFC337BLAB"
+        },
+        {
+          "keepa_minutes": 7994226,
+          "timestamp_utc": "2026-03-14T13:06:00Z",
+          "seller_id": "A1GWMNQKQF7URN"
+        },
+        {
+          "keepa_minutes": 7997736,
+          "timestamp_utc": "2026-03-16T23:36:00Z",
+          "seller_id": "A35DZ5FWOQPI9J"
+        },
+        {
+          "keepa_minutes": 7997774,
+          "timestamp_utc": "2026-03-17T00:14:00Z",
+          "seller_id": "A1GWMNQKQF7URN"
+        },
+        {
+          "keepa_minutes": 8002320,
+          "timestamp_utc": "2026-03-20T04:00:00Z",
+          "seller_id": "A3O8W6ERYHUVT0"
+        },
+        {
+          "keepa_minutes": 8002464,
+          "timestamp_utc": "2026-03-20T06:24:00Z",
+          "seller_id": "A1E9FT1UFOTH9W"
+        },
+        {
+          "keepa_minutes": 8002596,
+          "timestamp_utc": "2026-03-20T08:36:00Z",
+          "seller_id": "A3O8W6ERYHUVT0"
+        },
+        {
+          "keepa_minutes": 8006516,
+          "timestamp_utc": "2026-03-23T01:56:00Z",
+          "seller_id": "A1GWMNQKQF7URN"
+        },
+        {
+          "keepa_minutes": 8007060,
+          "timestamp_utc": "2026-03-23T11:00:00Z",
+          "seller_id": "A2RLAFC337BLAB"
+        },
+        {
+          "keepa_minutes": 8007980,
+          "timestamp_utc": "2026-03-24T02:20:00Z",
+          "seller_id": "A35DZ5FWOQPI9J"
+        },
+        {
+          "keepa_minutes": 8008196,
+          "timestamp_utc": "2026-03-24T05:56:00Z",
+          "seller_id": "A2RLAFC337BLAB"
+        },
+        {
+          "keepa_minutes": 8008504,
+          "timestamp_utc": "2026-03-24T11:04:00Z",
+          "seller_id": "A3IOLAP040KGDV"
+        },
+        {
+          "keepa_minutes": 8008604,
+          "timestamp_utc": "2026-03-24T12:44:00Z",
+          "seller_id": "A2RLAFC337BLAB"
+        }
+      ]
+    },
+    "fee_context": {
+      "estimated_sell_price_mid_bb": null,
+      "buy_box_range_current": null,
+      "amazon_fees_total": null,
+      "referral_fee": null,
+      "fba_fulfillment_fee": null,
+      "fee_breakdown": {},
+      "package_weight_grams": 150.0,
+      "inbound_shipping_rate_per_lb": 0.77,
+      "inbound_shipping_fee": null,
+      "landed_cost_per_unit": 26.2,
+      "profit_per_unit": null,
+      "roi_percent": null,
+      "margin_percent": null,
+      "errors": [
+        "Cannot parse Buy Box Range"
+      ]
+    },
+    "errors": [],
+    "manual_label": {
+      "my_decision": null,
+      "gate_correct": null,
+      "my_reasoning": null,
+      "gate_missed": null,
+      "expected_llm_override": null
+    }
+  },
+  "llm1_output": {
+    "status": "bypass",
+    "reason": "hard bypass condition met"
+  },
+  "llm2_output": {},
+  "final_decision": {
+    "decision": "REJECT",
+    "recommended_qty": 0,
+    "downside_risk": "HIGH",
+    "needs_human_review": true,
+    "reasons": [
+      "ASIN is gated.",
+      "Cannot parse Buy Box Range",
+      "ROI % is missing or invalid.",
+      "Margin % is missing or invalid.",
+      "Keepa fields missing: Buy Box Range (Current).",
+      "Buy Box range issue: buy box suppressed for most of last 21 days (62.07% suppressed)."
+    ],
+    "audit_fields": {
+      "Spike Threshold": "47.00",
+      "Spike Share %": "1.10",
+      "Effective Spike Units / Mo": "0.28",
+      "Spike ROI %": "",
+      "Spike Margin %": "",
+      "Spike Windows Count": "1",
+      "Spike Path Qualified": "NO"
+    }
+  },
+  "timestamp_utc": "2026-03-24T22:45:37Z"
+}

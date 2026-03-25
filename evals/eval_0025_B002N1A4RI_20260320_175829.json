@@ -1,0 +1,348 @@
+{
+  "eval_id": "eval_0025",
+  "asin": "B002N1A4RI",
+  "created_at_utc": "2026-03-20T17:58:29Z",
+  "pipeline_context": {
+    "policy_version": "v1.0",
+    "keepa_domain_id": 1,
+    "marketplace_id": "ATVPDKIKX0DER",
+    "currency": "USD"
+  },
+  "gate_decision": {
+    "qualified": true,
+    "decision": "BUY",
+    "reason": "All deterministic gates passed. Qty model=AddrFBA 96.5/mo, EffComp 5.85, Conf 0.68 (base 0.75 * stock 0.90), Entrant 11.1/mo.",
+    "reasons": [
+      "All deterministic gates passed. Qty model=AddrFBA 96.5/mo, EffComp 5.85, Conf 0.68 (base 0.75 * stock 0.90), Entrant 11.1/mo."
+    ],
+    "recommended_qty": 12,
+    "downside_risk": "LOW",
+    "needs_human_review": false,
+    "audit_fields": {
+      "Spike Threshold": "32.00",
+      "Spike Share %": "85.11",
+      "Effective Spike Units / Mo": "42.55",
+      "Spike ROI %": "28.82",
+      "Spike Margin %": "22.37",
+      "Spike Windows Count": "5",
+      "Spike Path Qualified": "YES",
+      "Buy Box FBA Share % (90d)": "96.48",
+      "Buy Box FBM Share % (90d)": "3.52",
+      "Competitive FBA Sellers Near BB": "4",
+      "Competitive FBM Sellers Near BB": "1",
+      "Addressable FBA Units / Mo": "96.48",
+      "Effective Competitor Count": "5.85",
+      "Qty Confidence Multiplier": "0.68",
+      "Base Qty Confidence": "0.75",
+      "Stock Pressure Multiplier": "0.90",
+      "Competitive Weighted Stock Units": "57.40",
+      "Competitive Stock Known Sellers": "5",
+      "Competitive Stock Total Sellers": "5",
+      "Competitive Stock Days Ahead": "17.85",
+      "Stock Signal Reliability": "100.00",
+      "Entrant Units Est / Mo": "11.13"
+    }
+  },
+  "key_metrics": {
+    "est_sales_month": 100,
+    "offer_count_delta_14d": 1,
+    "buy_box_90d_avg": 32.11,
+    "buy_box_90d_low": 30.0,
+    "amazon_buy_box_pct_90d": 0.0,
+    "buy_box_stability": "STABLE",
+    "brand": "La Compagnie de Provence",
+    "buy_box_range_current": "32.00-32.00",
+    "buy_box_range_21d_low": 32.0,
+    "buy_box_range_21d_high": 32.0,
+    "buy_box_samples_21d": 26,
+    "buy_box_total_events_21d": 27,
+    "buy_box_relative_spread_21d": 0.0,
+    "buy_box_range_issue": null,
+    "current_buy_box_price": 32.0,
+    "competitive_sellers_near_bb": 5,
+    "competitive_fba_sellers_near_bb": 4,
+    "competitive_fbm_sellers_near_bb": 1,
+    "competitive_weighted_stock_units": 57.4,
+    "competitive_stock_known_sellers": 5,
+    "competitive_stock_total_sellers": 5,
+    "competitive_allowed_delta": 0.5,
+    "competitive_ceiling_price": 32.5,
+    "competitive_debug": "band=32.00-32.00, ext=0.50, ceiling=32.50, comp_fba=4, comp_fbm=1, comp_total=5, stock_known=5/5, weighted_stock=57.40",
+    "competitive_issue": null,
+    "buy_box_fba_share_90d": 96.48,
+    "buy_box_fbm_share_90d": 3.52,
+    "package_weight_grams": 762.0,
+    "missing_fields": [],
+    "source_error": null
+  },
+  "raw_history": {
+    "buy_box_price_history": [
+      {
+        "keepa_minutes": 7959874,
+        "timestamp_utc": "2026-02-18T16:34:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7961540,
+        "timestamp_utc": "2026-02-19T20:20:00Z",
+        "price_usd": 30.0
+      },
+      {
+        "keepa_minutes": 7964292,
+        "timestamp_utc": "2026-02-21T18:12:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7977942,
+        "timestamp_utc": "2026-03-03T05:42:00Z",
+        "price_usd": 31.99
+      },
+      {
+        "keepa_minutes": 7977944,
+        "timestamp_utc": "2026-03-03T05:44:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7978274,
+        "timestamp_utc": "2026-03-03T11:14:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7978412,
+        "timestamp_utc": "2026-03-03T13:32:00Z",
+        "price_usd": 31.0
+      },
+      {
+        "keepa_minutes": 7978424,
+        "timestamp_utc": "2026-03-03T13:44:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7978904,
+        "timestamp_utc": "2026-03-03T21:44:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979072,
+        "timestamp_utc": "2026-03-04T00:32:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979156,
+        "timestamp_utc": "2026-03-04T01:56:00Z",
+        "price_usd": 31.99
+      },
+      {
+        "keepa_minutes": 7979204,
+        "timestamp_utc": "2026-03-04T02:44:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979342,
+        "timestamp_utc": "2026-03-04T05:02:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979400,
+        "timestamp_utc": "2026-03-04T06:00:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979404,
+        "timestamp_utc": "2026-03-04T06:04:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979414,
+        "timestamp_utc": "2026-03-04T06:14:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979416,
+        "timestamp_utc": "2026-03-04T06:16:00Z",
+        "price_usd": 31.0
+      },
+      {
+        "keepa_minutes": 7979464,
+        "timestamp_utc": "2026-03-04T07:04:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979624,
+        "timestamp_utc": "2026-03-04T09:44:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979732,
+        "timestamp_utc": "2026-03-04T11:32:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979798,
+        "timestamp_utc": "2026-03-04T12:38:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7979922,
+        "timestamp_utc": "2026-03-04T14:42:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7980084,
+        "timestamp_utc": "2026-03-04T17:24:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7980680,
+        "timestamp_utc": "2026-03-05T03:20:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7981648,
+        "timestamp_utc": "2026-03-05T19:28:00Z",
+        "price_usd": 31.0
+      },
+      {
+        "keepa_minutes": 7981704,
+        "timestamp_utc": "2026-03-05T20:24:00Z",
+        "price_usd": 32.0
+      },
+      {
+        "keepa_minutes": 7981716,
+        "timestamp_utc": "2026-03-05T20:36:00Z",
+        "price_usd": 31.0
+      },
+      {
+        "keepa_minutes": 7981846,
+        "timestamp_utc": "2026-03-05T22:46:00Z",
+        "price_usd": 32.0
+      }
+    ],
+    "buy_box_seller_history": [
+      {
+        "keepa_minutes": 7959874,
+        "timestamp_utc": "2026-02-18T16:34:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7961540,
+        "timestamp_utc": "2026-02-19T20:20:00Z",
+        "seller_id": "A1RA8IGWDEMLEH"
+      },
+      {
+        "keepa_minutes": 7964292,
+        "timestamp_utc": "2026-02-21T18:12:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7977942,
+        "timestamp_utc": "2026-03-03T05:42:00Z",
+        "seller_id": "A3V93LCNZ29AVX"
+      },
+      {
+        "keepa_minutes": 7977944,
+        "timestamp_utc": "2026-03-03T05:44:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7978412,
+        "timestamp_utc": "2026-03-03T13:32:00Z",
+        "seller_id": "A1RA8IGWDEMLEH"
+      },
+      {
+        "keepa_minutes": 7978424,
+        "timestamp_utc": "2026-03-03T13:44:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7979156,
+        "timestamp_utc": "2026-03-04T01:56:00Z",
+        "seller_id": "A3V93LCNZ29AVX"
+      },
+      {
+        "keepa_minutes": 7979204,
+        "timestamp_utc": "2026-03-04T02:44:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7979416,
+        "timestamp_utc": "2026-03-04T06:16:00Z",
+        "seller_id": "A1RA8IGWDEMLEH"
+      },
+      {
+        "keepa_minutes": 7979464,
+        "timestamp_utc": "2026-03-04T07:04:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7981648,
+        "timestamp_utc": "2026-03-05T19:28:00Z",
+        "seller_id": "A1RA8IGWDEMLEH"
+      },
+      {
+        "keepa_minutes": 7981688,
+        "timestamp_utc": "2026-03-05T20:08:00Z",
+        "seller_id": "-2"
+      },
+      {
+        "keepa_minutes": 7981704,
+        "timestamp_utc": "2026-03-05T20:24:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 7981716,
+        "timestamp_utc": "2026-03-05T20:36:00Z",
+        "seller_id": "A1RA8IGWDEMLEH"
+      },
+      {
+        "keepa_minutes": 7981748,
+        "timestamp_utc": "2026-03-05T21:08:00Z",
+        "seller_id": "-2"
+      },
+      {
+        "keepa_minutes": 7981846,
+        "timestamp_utc": "2026-03-05T22:46:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      },
+      {
+        "keepa_minutes": 8002390,
+        "timestamp_utc": "2026-03-20T05:10:00Z",
+        "seller_id": "A1HDSL55N2HEA9"
+      },
+      {
+        "keepa_minutes": 8002392,
+        "timestamp_utc": "2026-03-20T05:12:00Z",
+        "seller_id": "A2ZA3S9LP9TUN4"
+      }
+    ]
+  },
+  "fee_context": {
+    "estimated_sell_price_mid_bb": 32.0,
+    "buy_box_range_current": "32.00-32.00",
+    "amazon_fees_total": 10.37,
+    "referral_fee": 4.8,
+    "fba_fulfillment_fee": 0,
+    "fee_breakdown": {
+      "ReferralFee": 4.8,
+      "VariableClosingFee": 0.0,
+      "PerItemFee": 0.0,
+      "FBAFees": 5.57
+    },
+    "package_weight_grams": 762.0,
+    "inbound_shipping_rate_per_lb": 0.77,
+    "inbound_shipping_fee": 1.29,
+    "landed_cost_per_unit": 15.79,
+    "profit_per_unit": 4.55,
+    "roi_percent": 28.82,
+    "margin_percent": 14.22,
+    "errors": []
+  },
+  "errors": [],
+  "manual_label": {
+    "my_decision": "TEST",
+    "gate_correct": false,
+    "my_reasoning": "All deterministic gates passed and buy box is stable, but buy box is very dominated by one seller which is a risk. Overall looks like a decent buy but not 100% confident due to lack of competition in buy box.",
+    "gate_missed": "The gate missed the fact that the buy box is very dominated by one seller which is a risk factor for me being able to sell the product and win the buy box.",
+    "expected_llm_override": "ESCALATE"
+  }
+}

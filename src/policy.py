@@ -3,12 +3,27 @@ from __future__ import annotations
 import math
 import re
 
-from src.models import KeepaMetrics, PolicyDecision
+from src.models import FilterResult, KeepaMetrics, PolicyDecision
 
 TEST_QTY_DEFAULT = 8
 TEST_QTY_HIGH_RISK = 6
 SPIKE_TEST_QTY_HIGH_VOLUME = 10
 BUY_QTY_CAP = 50
+FBM_COMPETITOR_WEIGHT = 0.35
+NEW_ENTRANT_PENALTY = 1.5
+BASE_CONFIDENCE_HAIRCUT = 0.75
+UNSTABLE_CONFIDENCE_HAIRCUT = 0.85
+HIGH_CHURN_CONFIDENCE_HAIRCUT = 0.85
+MED_CHURN_CONFIDENCE_HAIRCUT = 0.92
+HIGH_SPREAD_CONFIDENCE_HAIRCUT = 0.85
+MED_SPREAD_CONFIDENCE_HAIRCUT = 0.92
+STOCK_MISSING_CONFIDENCE_HAIRCUT = 0.92
+STOCK_LOW_COVERAGE_HAIRCUT = 0.96
+STOCK_MED_COVERAGE_HAIRCUT = 0.90
+STOCK_HIGH_COVERAGE_HAIRCUT = 0.82
+STOCK_EXTREME_COVERAGE_HAIRCUT = 0.72
+STOCK_LOW_PRESSURE_BONUS = 1.05
+STOCK_MODERATE_PRESSURE_BONUS = 1.02
 
 SPIKE_PERCENTILE = 85
 SPIKE_MIN_WINDOW_MINUTES = 6 * 60
@@ -31,6 +46,7 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
 
     roi = _parse_number(row_data.get("ROI %"))
     margin = _parse_number(row_data.get("Margin %"))
+    profitability_calc_error = (row_data.get("Profitability Calc Error") or "").strip()
     competitors_near_bb = _parse_number(
         row_data.get("Competitive Sellers Near BB")
         or row_data.get("Competitive Sellers Near BB (Manual)")
@@ -63,6 +79,10 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
     if supplier_verified != "YES":
         needs_human_review = True
         reasons.append("Supplier Verified is not YES.")
+
+    if profitability_calc_error:
+        needs_human_review = True
+        reasons.append(profitability_calc_error)
 
     if roi is None:
         needs_human_review = True
@@ -203,28 +223,35 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
                 reasons=["Cannot compute BUY qty: Est Sales / Month missing."],
                 audit_fields=spike_eval["audit_fields"],
             )
-        if competitors_near_bb is None or competitors_near_bb <= 0:
+        qty_estimate, qty_issue = _estimate_buy_qty_for_new_fba_entrant(
+            keepa=keepa,
+            fallback_competitors=competitors_near_bb,
+        )
+        if qty_estimate is None or qty_issue is not None:
             return PolicyDecision(
                 decision="DEFER",
                 recommended_qty=0,
                 downside_risk="MED",
                 needs_human_review=True,
-                reasons=[
-                    "Cannot compute BUY qty: Competitive Sellers Near BB is missing/invalid."
-                ],
-                audit_fields=spike_eval["audit_fields"],
+                reasons=[f"Cannot compute BUY qty: {qty_issue or 'quantity model unavailable'}."],
+                audit_fields=_merge_audit_fields(
+                    spike_eval["audit_fields"],
+                    (qty_estimate or {}).get("audit_fields", {}),
+                ),
             )
-        buy_qty = _calculate_buy_qty(
-            est_sales_month=keepa.est_sales_month,
-            competitors_near_bb=competitors_near_bb,
+        buy_qty = int(qty_estimate["recommended_qty"])
+        qty_summary = str(qty_estimate["summary"])
+        combined_audit = _merge_audit_fields(
+            spike_eval["audit_fields"],
+            qty_estimate["audit_fields"],
         )
         return PolicyDecision(
             decision="BUY",
             recommended_qty=buy_qty,
             downside_risk="LOW",
             needs_human_review=False,
-            reasons=["All deterministic gates passed."],
-            audit_fields=spike_eval["audit_fields"],
+            reasons=[f"All deterministic gates passed. {qty_summary}"],
+            audit_fields=combined_audit,
         )
 
     test_qty = TEST_QTY_HIGH_RISK if downside_risk == "HIGH" else TEST_QTY_DEFAULT
@@ -235,6 +262,125 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
         needs_human_review=False,
         reasons=_dedupe_reasons(reasons) or ["Risk not low; assigned TEST quantity."],
         audit_fields=spike_eval["audit_fields"],
+    )
+
+
+def evaluate_keepa_only(keepa: KeepaMetrics) -> FilterResult:
+    if keepa.source_error:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason=f"Keepa error: {keepa.source_error}",
+        )
+    if keepa.buy_box_range_issue:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason=f"Buy Box range issue: {keepa.buy_box_range_issue}",
+        )
+    if keepa.competitive_issue:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason=f"Competitive sellers issue: {keepa.competitive_issue}",
+        )
+    if keepa.est_sales_month is None:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason="Missing Est Sales / Month",
+        )
+    if keepa.amazon_buy_box_pct_90d is None:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason="Missing Amazon Buy Box % (90d)",
+        )
+    if keepa.offer_count_delta_14d is None:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason="Missing Offer Count Delta (14d)",
+        )
+    has_competition_pool = any(
+        value is not None and value >= 0
+        for value in (
+            keepa.competitive_sellers_near_bb,
+            keepa.competitive_fba_sellers_near_bb,
+            keepa.competitive_fbm_sellers_near_bb,
+        )
+    )
+    if not has_competition_pool:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason="Missing competitive seller pool",
+        )
+    if keepa.buy_box_fba_share_90d is None and keepa.buy_box_fbm_share_90d is None:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason="Missing buy box fulfillment share (90d)",
+        )
+
+    if keepa.est_sales_month < 30:
+        return FilterResult(
+            qualified=False,
+            decision="REJECT",
+            reason=f"Low demand: Est Sales / Month {keepa.est_sales_month} < 30",
+        )
+    if keepa.amazon_buy_box_pct_90d > 50:
+        return FilterResult(
+            qualified=False,
+            decision="REJECT",
+            reason=f"Amazon Buy Box % too high: {keepa.amazon_buy_box_pct_90d:.2f}%",
+        )
+    if keepa.offer_count_delta_14d > 10:
+        return FilterResult(
+            qualified=False,
+            decision="REJECT",
+            reason=f"Offer spike: Delta +{keepa.offer_count_delta_14d} > +10",
+        )
+
+    risk_score = 0
+    if keepa.buy_box_stability == "UNSTABLE":
+        risk_score += 1
+    if keepa.amazon_buy_box_pct_90d >= 35:
+        risk_score += 1
+
+    if risk_score >= 2:
+        return FilterResult(
+            qualified=True,
+            decision="TEST",
+            reason="Qualified Keepa-only (elevated risk; test recommended)",
+            recommended_qty=TEST_QTY_HIGH_RISK,
+        )
+    if risk_score == 1:
+        return FilterResult(
+            qualified=True,
+            decision="TEST",
+            reason="Qualified Keepa-only (moderate risk; test recommended)",
+            recommended_qty=TEST_QTY_DEFAULT,
+        )
+
+    qty_estimate, qty_issue = _estimate_buy_qty_for_new_fba_entrant(
+        keepa=keepa,
+        fallback_competitors=None,
+    )
+    if qty_estimate is None or qty_issue is not None:
+        return FilterResult(
+            qualified=False,
+            decision="DEFER",
+            reason=f"Quantity model unavailable: {qty_issue or 'missing signals'}",
+            audit_fields=(qty_estimate or {}).get("audit_fields", {}),
+        )
+    recommended_qty = int(qty_estimate["recommended_qty"])
+    return FilterResult(
+        qualified=True,
+        decision="BUY",
+        reason=f"Qualified Keepa-only (all Keepa gates passed). {qty_estimate['summary']}",
+        recommended_qty=recommended_qty,
+        audit_fields=qty_estimate["audit_fields"],
     )
 
 
@@ -482,10 +628,154 @@ def _classify_risk(
     return "LOW"
 
 
-def _calculate_buy_qty(est_sales_month: int, competitors_near_bb: float) -> int:
-    qty = math.ceil((est_sales_month / competitors_near_bb) * 1.5)
-    qty = max(1, qty)
-    return min(BUY_QTY_CAP, qty)
+def _estimate_buy_qty_for_new_fba_entrant(
+    keepa: KeepaMetrics,
+    fallback_competitors: float | None,
+) -> tuple[dict[str, object] | None, str | None]:
+    sales_month = keepa.est_sales_month
+    if sales_month is None or sales_month <= 0:
+        return None, "Est Sales / Month missing"
+
+    fba_share_pct = keepa.buy_box_fba_share_90d
+    if fba_share_pct is None:
+        return None, "Buy Box FBA share (90d) missing"
+    fba_share_pct = max(0.0, min(100.0, fba_share_pct))
+    addressable_fba_units = sales_month * (fba_share_pct / 100.0)
+    if addressable_fba_units <= 0:
+        return None, "Buy Box FBA share implies zero addressable demand"
+
+    comp_fba = keepa.competitive_fba_sellers_near_bb
+    comp_fbm = keepa.competitive_fbm_sellers_near_bb
+    comp_total = keepa.competitive_sellers_near_bb
+
+    if comp_fba is None:
+        if comp_total is not None and comp_total > 0:
+            comp_fba = comp_total
+        elif fallback_competitors is not None and fallback_competitors > 0:
+            comp_fba = int(math.ceil(fallback_competitors))
+    if comp_fba is None:
+        return None, "Competitive FBA seller pool missing"
+    comp_fba = max(1, int(comp_fba))
+
+    if comp_fbm is None:
+        if comp_total is not None:
+            comp_fbm = max(0, comp_total - comp_fba)
+        else:
+            comp_fbm = 0
+
+    effective_competitors = (
+        float(comp_fba)
+        + (float(comp_fbm) * FBM_COMPETITOR_WEIGHT)
+        + NEW_ENTRANT_PENALTY
+    )
+    if effective_competitors <= 0:
+        return None, "Effective competitor count invalid"
+
+    base_confidence = _quantity_confidence_multiplier(keepa)
+    stock_modifier, stock_days_ahead, stock_reliability = _stock_pressure_modifier(
+        keepa=keepa,
+        addressable_fba_units_month=addressable_fba_units,
+    )
+    confidence = max(0.30, min(0.90, base_confidence * stock_modifier))
+    entrant_units_est = (addressable_fba_units / effective_competitors) * confidence
+    recommended_qty = min(BUY_QTY_CAP, max(1, int(math.ceil(entrant_units_est))))
+
+    summary = (
+        "Qty model="
+        f"AddrFBA {addressable_fba_units:.1f}/mo, "
+        f"EffComp {effective_competitors:.2f}, "
+        f"Conf {confidence:.2f} (base {base_confidence:.2f} * stock {stock_modifier:.2f}), "
+        f"Entrant {entrant_units_est:.1f}/mo."
+    )
+    audit_fields = {
+        "Buy Box FBA Share % (90d)": f"{fba_share_pct:.2f}",
+        "Buy Box FBM Share % (90d)": _fmt_optional_float(keepa.buy_box_fbm_share_90d),
+        "Competitive FBA Sellers Near BB": str(int(comp_fba)),
+        "Competitive FBM Sellers Near BB": str(int(comp_fbm)),
+        "Addressable FBA Units / Mo": f"{addressable_fba_units:.2f}",
+        "Effective Competitor Count": f"{effective_competitors:.2f}",
+        "Qty Confidence Multiplier": f"{confidence:.2f}",
+        "Base Qty Confidence": f"{base_confidence:.2f}",
+        "Stock Pressure Multiplier": f"{stock_modifier:.2f}",
+        "Competitive Weighted Stock Units": _fmt_optional_float(keepa.competitive_weighted_stock_units),
+        "Competitive Stock Known Sellers": _fmt_optional_int(keepa.competitive_stock_known_sellers),
+        "Competitive Stock Total Sellers": _fmt_optional_int(keepa.competitive_stock_total_sellers),
+        "Competitive Stock Days Ahead": _fmt_optional_float(stock_days_ahead),
+        "Stock Signal Reliability": _fmt_optional_float(
+            None if stock_reliability is None else (stock_reliability * 100.0)
+        ),
+        "Entrant Units Est / Mo": f"{entrant_units_est:.2f}",
+    }
+    return {
+        "recommended_qty": recommended_qty,
+        "summary": summary,
+        "audit_fields": audit_fields,
+    }, None
+
+
+def _quantity_confidence_multiplier(keepa: KeepaMetrics) -> float:
+    multiplier = BASE_CONFIDENCE_HAIRCUT
+    if keepa.buy_box_stability == "UNSTABLE":
+        multiplier *= UNSTABLE_CONFIDENCE_HAIRCUT
+
+    offer_delta = keepa.offer_count_delta_14d
+    if offer_delta is not None:
+        if offer_delta >= 8:
+            multiplier *= HIGH_CHURN_CONFIDENCE_HAIRCUT
+        elif offer_delta >= 4:
+            multiplier *= MED_CHURN_CONFIDENCE_HAIRCUT
+
+    spread = keepa.buy_box_relative_spread_21d
+    if spread is not None:
+        if spread >= 0.25:
+            multiplier *= HIGH_SPREAD_CONFIDENCE_HAIRCUT
+        elif spread >= 0.15:
+            multiplier *= MED_SPREAD_CONFIDENCE_HAIRCUT
+
+    return max(0.35, min(0.9, multiplier))
+
+
+def _stock_pressure_modifier(
+    keepa: KeepaMetrics,
+    addressable_fba_units_month: float,
+) -> tuple[float, float | None, float | None]:
+    weighted_stock = keepa.competitive_weighted_stock_units
+    known_sellers = keepa.competitive_stock_known_sellers
+    total_sellers = keepa.competitive_stock_total_sellers
+
+    if weighted_stock is None or known_sellers is None or known_sellers <= 0:
+        return STOCK_MISSING_CONFIDENCE_HAIRCUT, None, None
+
+    daily_addressable = max(0.1, addressable_fba_units_month / 30.0)
+    stock_days_ahead = weighted_stock / daily_addressable
+
+    modifier = 1.0
+    if stock_days_ahead >= 60:
+        modifier *= STOCK_EXTREME_COVERAGE_HAIRCUT
+    elif stock_days_ahead >= 30:
+        modifier *= STOCK_HIGH_COVERAGE_HAIRCUT
+    elif stock_days_ahead >= 15:
+        modifier *= STOCK_MED_COVERAGE_HAIRCUT
+    elif stock_days_ahead <= 5:
+        modifier *= STOCK_LOW_PRESSURE_BONUS
+    elif stock_days_ahead <= 10:
+        modifier *= STOCK_MODERATE_PRESSURE_BONUS
+
+    reliability: float | None = None
+    if total_sellers is not None and total_sellers > 0:
+        reliability = max(0.0, min(1.0, float(known_sellers) / float(total_sellers)))
+        if reliability < 0.5:
+            modifier *= STOCK_MISSING_CONFIDENCE_HAIRCUT
+        elif reliability < 0.75:
+            modifier *= STOCK_LOW_COVERAGE_HAIRCUT
+
+    return modifier, stock_days_ahead, reliability
+
+
+def _merge_audit_fields(base: dict[str, str], extra: dict[str, str]) -> dict[str, str]:
+    merged = dict(base)
+    merged.update(extra)
+    return merged
 
 
 def _dedupe_reasons(reasons: list[str]) -> list[str]:
@@ -566,3 +856,9 @@ def _fmt_optional_float(value: float | None) -> str:
     if value is None:
         return ""
     return f"{value:.2f}"
+
+
+def _fmt_optional_int(value: int | None) -> str:
+    if value is None:
+        return ""
+    return str(int(value))

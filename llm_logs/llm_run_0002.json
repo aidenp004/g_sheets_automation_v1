@@ -1,0 +1,408 @@
+{
+  "eval_json": {
+    "eval_id": null,
+    "asin": "B08128CYFS",
+    "created_at_utc": "2026-03-24T22:35:48Z",
+    "pipeline_context": {
+      "policy_version": "v1.0",
+      "keepa_domain_id": 1,
+      "marketplace_id": "ATVPDKIKX0DER",
+      "currency": "USD"
+    },
+    "gate_decision": {
+      "qualified": false,
+      "decision": "DEFER",
+      "reason": "Buy Box 90d Low is below estimated break-even floor (price downside risk).; ROI % (17.63) is below threshold 20.00.; Margin % (8.05) is below threshold 12.00.",
+      "reasons": [
+        "Buy Box 90d Low is below estimated break-even floor (price downside risk).",
+        "ROI % (17.63) is below threshold 20.00.",
+        "Margin % (8.05) is below threshold 12.00."
+      ],
+      "recommended_qty": 0,
+      "downside_risk": "MED",
+      "needs_human_review": true,
+      "audit_fields": {
+        "Spike Threshold": "20.92",
+        "Spike Share %": "2.07",
+        "Effective Spike Units / Mo": "3.10",
+        "Spike ROI %": "30.27",
+        "Spike Margin %": "23.24",
+        "Spike Windows Count": "2",
+        "Spike Path Qualified": "NO"
+      }
+    },
+    "key_metrics": {
+      "est_sales_month": 300,
+      "offer_count_delta_14d": -1,
+      "buy_box_90d_avg": 17.95,
+      "buy_box_90d_low": 14.99,
+      "amazon_buy_box_pct_90d": 0.0,
+      "buy_box_stability": "STABLE",
+      "brand": "Plasti Dip",
+      "buy_box_range_current": "16.99-20.79",
+      "buy_box_range_21d_low": 16.99,
+      "buy_box_range_21d_high": 20.79,
+      "buy_box_samples_21d": 15,
+      "buy_box_total_events_21d": 14,
+      "buy_box_relative_spread_21d": 0.20116463737427212,
+      "buy_box_range_issue": null,
+      "current_buy_box_price": 20.79,
+      "competitive_sellers_near_bb": 3,
+      "competitive_fba_sellers_near_bb": 1,
+      "competitive_fbm_sellers_near_bb": 2,
+      "competitive_weighted_stock_units": 514.78,
+      "competitive_stock_known_sellers": 3,
+      "competitive_stock_total_sellers": 3,
+      "competitive_allowed_delta": 0.95,
+      "competitive_ceiling_price": 21.74,
+      "competitive_debug": "band=16.99-20.79, ext=0.95, ceiling=21.74, comp_fba=1, comp_fbm=2, comp_total=3, stock_known=3/3, weighted_stock=514.78",
+      "competitive_issue": null,
+      "buy_box_fba_share_90d": 75.86,
+      "buy_box_fbm_share_90d": 24.14,
+      "package_weight_grams": 431.0,
+      "missing_fields": [],
+      "source_error": null
+    },
+    "raw_history": {
+      "buy_box_price_history": [
+        {
+          "keepa_minutes": 7964332,
+          "timestamp_utc": "2026-02-21T18:52:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7966956,
+          "timestamp_utc": "2026-02-23T14:36:00Z",
+          "price_usd": 19.99
+        },
+        {
+          "keepa_minutes": 7967164,
+          "timestamp_utc": "2026-02-23T18:04:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7967924,
+          "timestamp_utc": "2026-02-24T06:44:00Z",
+          "price_usd": 19.99
+        },
+        {
+          "keepa_minutes": 7968004,
+          "timestamp_utc": "2026-02-24T08:04:00Z",
+          "price_usd": 17.99
+        },
+        {
+          "keepa_minutes": 7968550,
+          "timestamp_utc": "2026-02-24T17:10:00Z",
+          "price_usd": 19.99
+        },
+        {
+          "keepa_minutes": 7972152,
+          "timestamp_utc": "2026-02-27T05:12:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7972466,
+          "timestamp_utc": "2026-02-27T10:26:00Z",
+          "price_usd": 20.99
+        },
+        {
+          "keepa_minutes": 7972788,
+          "timestamp_utc": "2026-02-27T15:48:00Z",
+          "price_usd": 17.99
+        },
+        {
+          "keepa_minutes": 7973056,
+          "timestamp_utc": "2026-02-27T20:16:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7974912,
+          "timestamp_utc": "2026-03-01T03:12:00Z",
+          "price_usd": 17.99
+        },
+        {
+          "keepa_minutes": 7976476,
+          "timestamp_utc": "2026-03-02T05:16:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7977906,
+          "timestamp_utc": "2026-03-03T05:06:00Z",
+          "price_usd": 18.99
+        },
+        {
+          "keepa_minutes": 7978152,
+          "timestamp_utc": "2026-03-03T09:12:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7978774,
+          "timestamp_utc": "2026-03-03T19:34:00Z",
+          "price_usd": 17.99
+        },
+        {
+          "keepa_minutes": 7986124,
+          "timestamp_utc": "2026-03-08T22:04:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7986864,
+          "timestamp_utc": "2026-03-09T10:24:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7990792,
+          "timestamp_utc": "2026-03-12T03:52:00Z",
+          "price_usd": 20.99
+        },
+        {
+          "keepa_minutes": 7990900,
+          "timestamp_utc": "2026-03-12T05:40:00Z",
+          "price_usd": 17.99
+        },
+        {
+          "keepa_minutes": 7993132,
+          "timestamp_utc": "2026-03-13T18:52:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7993136,
+          "timestamp_utc": "2026-03-13T18:56:00Z",
+          "price_usd": 20.99
+        },
+        {
+          "keepa_minutes": 7993640,
+          "timestamp_utc": "2026-03-14T03:20:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7994540,
+          "timestamp_utc": "2026-03-14T18:20:00Z",
+          "price_usd": 20.99
+        },
+        {
+          "keepa_minutes": 7994618,
+          "timestamp_utc": "2026-03-14T19:38:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 7999360,
+          "timestamp_utc": "2026-03-18T02:40:00Z",
+          "price_usd": 20.79
+        },
+        {
+          "keepa_minutes": 7999748,
+          "timestamp_utc": "2026-03-18T09:08:00Z",
+          "price_usd": 20.95
+        },
+        {
+          "keepa_minutes": 8000120,
+          "timestamp_utc": "2026-03-18T15:20:00Z",
+          "price_usd": 20.79
+        },
+        {
+          "keepa_minutes": 8006700,
+          "timestamp_utc": "2026-03-23T05:00:00Z",
+          "price_usd": 16.99
+        },
+        {
+          "keepa_minutes": 8006702,
+          "timestamp_utc": "2026-03-23T05:02:00Z",
+          "price_usd": 20.79
+        }
+      ],
+      "buy_box_seller_history": [
+        {
+          "keepa_minutes": 7964332,
+          "timestamp_utc": "2026-02-21T18:52:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7966956,
+          "timestamp_utc": "2026-02-23T14:36:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7967164,
+          "timestamp_utc": "2026-02-23T18:04:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7967924,
+          "timestamp_utc": "2026-02-24T06:44:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7968004,
+          "timestamp_utc": "2026-02-24T08:04:00Z",
+          "seller_id": "A1UMBRA5ZTBCX8"
+        },
+        {
+          "keepa_minutes": 7968550,
+          "timestamp_utc": "2026-02-24T17:10:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7972152,
+          "timestamp_utc": "2026-02-27T05:12:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7972466,
+          "timestamp_utc": "2026-02-27T10:26:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7972788,
+          "timestamp_utc": "2026-02-27T15:48:00Z",
+          "seller_id": "A1UMBRA5ZTBCX8"
+        },
+        {
+          "keepa_minutes": 7973056,
+          "timestamp_utc": "2026-02-27T20:16:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7974912,
+          "timestamp_utc": "2026-03-01T03:12:00Z",
+          "seller_id": "A1UMBRA5ZTBCX8"
+        },
+        {
+          "keepa_minutes": 7976476,
+          "timestamp_utc": "2026-03-02T05:16:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7977906,
+          "timestamp_utc": "2026-03-03T05:06:00Z",
+          "seller_id": "A1UMBRA5ZTBCX8"
+        },
+        {
+          "keepa_minutes": 7978152,
+          "timestamp_utc": "2026-03-03T09:12:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7978774,
+          "timestamp_utc": "2026-03-03T19:34:00Z",
+          "seller_id": "A1UMBRA5ZTBCX8"
+        },
+        {
+          "keepa_minutes": 7986124,
+          "timestamp_utc": "2026-03-08T22:04:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7990792,
+          "timestamp_utc": "2026-03-12T03:52:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7990900,
+          "timestamp_utc": "2026-03-12T05:40:00Z",
+          "seller_id": "A1UMBRA5ZTBCX8"
+        },
+        {
+          "keepa_minutes": 7993132,
+          "timestamp_utc": "2026-03-13T18:52:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7993136,
+          "timestamp_utc": "2026-03-13T18:56:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7993640,
+          "timestamp_utc": "2026-03-14T03:20:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7994540,
+          "timestamp_utc": "2026-03-14T18:20:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7994618,
+          "timestamp_utc": "2026-03-14T19:38:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 7999360,
+          "timestamp_utc": "2026-03-18T02:40:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 7999748,
+          "timestamp_utc": "2026-03-18T09:08:00Z",
+          "seller_id": "A2QHM4E6SS6LMF"
+        },
+        {
+          "keepa_minutes": 8000120,
+          "timestamp_utc": "2026-03-18T15:20:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        },
+        {
+          "keepa_minutes": 8006700,
+          "timestamp_utc": "2026-03-23T05:00:00Z",
+          "seller_id": "A3452XDG5RJ9T0"
+        },
+        {
+          "keepa_minutes": 8006702,
+          "timestamp_utc": "2026-03-23T05:02:00Z",
+          "seller_id": "ANJ9Y2IHWDLKZ"
+        }
+      ]
+    },
+    "fee_context": {
+      "estimated_sell_price_mid_bb": null,
+      "buy_box_range_current": "16.99-20.79",
+      "amazon_fees_total": null,
+      "referral_fee": null,
+      "fba_fulfillment_fee": null,
+      "fee_breakdown": {},
+      "package_weight_grams": 431.0,
+      "inbound_shipping_rate_per_lb": 0.77,
+      "inbound_shipping_fee": null,
+      "landed_cost_per_unit": 8.62,
+      "profit_per_unit": null,
+      "roi_percent": 17.63,
+      "margin_percent": 8.05,
+      "errors": []
+    },
+    "errors": [],
+    "manual_label": {
+      "my_decision": null,
+      "gate_correct": null,
+      "my_reasoning": null,
+      "gate_missed": null,
+      "expected_llm_override": null
+    }
+  },
+  "llm1_output": {
+    "status": "failed",
+    "reason": "llm_review returned None"
+  },
+  "llm2_output": {},
+  "final_decision": {
+    "decision": "DEFER",
+    "recommended_qty": 0,
+    "downside_risk": "MED",
+    "needs_human_review": true,
+    "reasons": [
+      "Buy Box 90d Low is below estimated break-even floor (price downside risk).",
+      "ROI % (17.63) is below threshold 20.00.",
+      "Margin % (8.05) is below threshold 12.00."
+    ],
+    "audit_fields": {
+      "Spike Threshold": "20.92",
+      "Spike Share %": "2.07",
+      "Effective Spike Units / Mo": "3.10",
+      "Spike ROI %": "30.27",
+      "Spike Margin %": "23.24",
+      "Spike Windows Count": "2",
+      "Spike Path Qualified": "NO"
+    }
+  },
+  "timestamp_utc": "2026-03-24T22:35:48Z"
+}

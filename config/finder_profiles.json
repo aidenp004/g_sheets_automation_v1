@@ -1,0 +1,14 @@
+{
+  "default_us": {
+    "selection_template": {
+      "sellerIdsFBA": [
+        "{{seller_id}}"
+      ],
+      "perPage": 5000
+    },
+    "max_pages": 5,
+    "candidate_limit": 500,
+    "detail_limit": 100,
+    "cooldown_days": 14
+  }
+}

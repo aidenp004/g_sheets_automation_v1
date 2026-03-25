@@ -1,0 +1,2983 @@
+{
+  "eval_id": "eval_0014",
+  "asin": "B07Z9LMKW2",
+  "created_at_utc": "2026-03-18T03:48:51Z",
+  "pipeline_context": {
+    "policy_version": "v1.0",
+    "keepa_domain_id": 1,
+    "marketplace_id": "ATVPDKIKX0DER",
+    "currency": "USD"
+  },
+  "gate_decision": {
+    "qualified": true,
+    "decision": "BUY",
+    "reason": "All deterministic gates passed. Qty model=AddrFBA 30.3/mo, EffComp 5.95, Conf 0.75 (base 0.75 * stock 1.00), Entrant 3.8/mo.",
+    "reasons": [
+      "All deterministic gates passed. Qty model=AddrFBA 30.3/mo, EffComp 5.95, Conf 0.75 (base 0.75 * stock 1.00), Entrant 3.8/mo."
+    ],
+    "recommended_qty": 4,
+    "downside_risk": "LOW",
+    "needs_human_review": false,
+    "audit_fields": {
+      "Spike Threshold": "58.71",
+      "Spike Share %": "7.84",
+      "Effective Spike Units / Mo": "1.96",
+      "Spike ROI %": "56.00",
+      "Spike Margin %": "35.90",
+      "Spike Windows Count": "1",
+      "Spike Path Qualified": "NO",
+      "Buy Box FBA Share % (90d)": "60.51",
+      "Buy Box FBM Share % (90d)": "39.49",
+      "Competitive FBA Sellers Near BB": "2",
+      "Competitive FBM Sellers Near BB": "7",
+      "Addressable FBA Units / Mo": "30.25",
+      "Effective Competitor Count": "5.95",
+      "Qty Confidence Multiplier": "0.75",
+      "Base Qty Confidence": "0.75",
+      "Stock Pressure Multiplier": "1.00",
+      "Competitive Weighted Stock Units": "13.00",
+      "Competitive Stock Known Sellers": "9",
+      "Competitive Stock Total Sellers": "9",
+      "Competitive Stock Days Ahead": "12.89",
+      "Stock Signal Reliability": "100.00",
+      "Entrant Units Est / Mo": "3.81"
+    }
+  },
+  "key_metrics": {
+    "est_sales_month": 50,
+    "offer_count_delta_14d": 3,
+    "buy_box_90d_avg": 66.63,
+    "buy_box_90d_low": 47.98,
+    "amazon_buy_box_pct_90d": 0.0,
+    "buy_box_stability": "STABLE",
+    "brand": "Jellycat",
+    "buy_box_range_current": "52.16-57.00",
+    "buy_box_range_21d_low": 52.16,
+    "buy_box_range_21d_high": 57.0,
+    "buy_box_samples_21d": 207,
+    "buy_box_total_events_21d": 207,
+    "buy_box_relative_spread_21d": 0.08867717112495425,
+    "buy_box_range_issue": null,
+    "current_buy_box_price": 56.37,
+    "competitive_sellers_near_bb": 9,
+    "competitive_fba_sellers_near_bb": 2,
+    "competitive_fbm_sellers_near_bb": 7,
+    "competitive_weighted_stock_units": 13.0,
+    "competitive_stock_known_sellers": 9,
+    "competitive_stock_total_sellers": 9,
+    "competitive_allowed_delta": 1.21,
+    "competitive_ceiling_price": 58.21,
+    "competitive_debug": "band=52.16-57.00, ext=1.21, ceiling=58.21, comp_fba=2, comp_fbm=7, comp_total=9, stock_known=9/9, weighted_stock=13.00",
+    "competitive_issue": null,
+    "buy_box_fba_share_90d": 60.51,
+    "buy_box_fbm_share_90d": 39.49,
+    "package_weight_grams": 32.0,
+    "missing_fields": [],
+    "source_error": null
+  },
+  "raw_history": {
+    "buy_box_price_history": [
+      {
+        "keepa_minutes": 7955732,
+        "timestamp_utc": "2026-02-15T19:32:00Z",
+        "price_usd": 65.0
+      },
+      {
+        "keepa_minutes": 7956624,
+        "timestamp_utc": "2026-02-16T10:24:00Z",
+        "price_usd": 64.95
+      },
+      {
+        "keepa_minutes": 7956704,
+        "timestamp_utc": "2026-02-16T11:44:00Z",
+        "price_usd": 65.0
+      },
+      {
+        "keepa_minutes": 7956878,
+        "timestamp_utc": "2026-02-16T14:38:00Z",
+        "price_usd": 64.95
+      },
+      {
+        "keepa_minutes": 7956960,
+        "timestamp_utc": "2026-02-16T16:00:00Z",
+        "price_usd": 65.0
+      },
+      {
+        "keepa_minutes": 7957032,
+        "timestamp_utc": "2026-02-16T17:12:00Z",
+        "price_usd": 64.95
+      },
+      {
+        "keepa_minutes": 7957256,
+        "timestamp_utc": "2026-02-16T20:56:00Z",
+        "price_usd": 60.1
+      },
+      {
+        "keepa_minutes": 7957396,
+        "timestamp_utc": "2026-02-16T23:16:00Z",
+        "price_usd": 60.87
+      },
+      {
+        "keepa_minutes": 7957422,
+        "timestamp_utc": "2026-02-16T23:42:00Z",
+        "price_usd": 61.65
+      },
+      {
+        "keepa_minutes": 7957462,
+        "timestamp_utc": "2026-02-17T00:22:00Z",
+        "price_usd": 60.0
+      },
+      {
+        "keepa_minutes": 7957652,
+        "timestamp_utc": "2026-02-17T03:32:00Z",
+        "price_usd": 60.93
+      },
+      {
+        "keepa_minutes": 7957700,
+        "timestamp_utc": "2026-02-17T04:20:00Z",
+        "price_usd": 60.0
+      },
+      {
+        "keepa_minutes": 7957936,
+        "timestamp_utc": "2026-02-17T08:16:00Z",
+        "price_usd": 60.93
+      },
+      {
+        "keepa_minutes": 7958164,
+        "timestamp_utc": "2026-02-17T12:04:00Z",
+        "price_usd": 60.0
+      },
+      {
+        "keepa_minutes": 7958372,
+        "timestamp_utc": "2026-02-17T15:32:00Z",
+        "price_usd": 63.28
+      },
+      {
+        "keepa_minutes": 7958444,
+        "timestamp_utc": "2026-02-17T16:44:00Z",
+        "price_usd": 63.59
+      },
+      {
+        "keepa_minutes": 7958618,
+        "timestamp_utc": "2026-02-17T19:38:00Z",
+        "price_usd": 62.87
+      },
+      {
+        "keepa_minutes": 7958720,
+        "timestamp_utc": "2026-02-17T21:20:00Z",
+        "price_usd": 62.07
+      },
+      {
+        "keepa_minutes": 7958760,
+        "timestamp_utc": "2026-02-17T22:00:00Z",
+        "price_usd": 59.35
+      },
+      {
+        "keepa_minutes": 7958870,
+        "timestamp_utc": "2026-02-17T23:50:00Z",
+        "price_usd": 60.12
+      },
+      {
+        "keepa_minutes": 7958932,
+        "timestamp_utc": "2026-02-18T00:52:00Z",
+        "price_usd": 59.99
+      },
+      {
+        "keepa_minutes": 7958944,
+        "timestamp_utc": "2026-02-18T01:04:00Z",
+        "price_usd": 59.91
+      },
+      {
+        "keepa_minutes": 7958968,
+        "timestamp_utc": "2026-02-18T01:28:00Z",
+        "price_usd": 59.63
+      },
+      {
+        "keepa_minutes": 7959012,
+        "timestamp_utc": "2026-02-18T02:12:00Z",
+        "price_usd": 59.92
+      },
+      {
+        "keepa_minutes": 7959132,
+        "timestamp_utc": "2026-02-18T04:12:00Z",
+        "price_usd": 57.36
+      },
+      {
+        "keepa_minutes": 7959264,
+        "timestamp_utc": "2026-02-18T06:24:00Z",
+        "price_usd": 59.99
+      },
+      {
+        "keepa_minutes": 7959308,
+        "timestamp_utc": "2026-02-18T07:08:00Z",
+        "price_usd": 57.41
+      },
+      {
+        "keepa_minutes": 7959352,
+        "timestamp_utc": "2026-02-18T07:52:00Z",
+        "price_usd": 57.39
+      },
+      {
+        "keepa_minutes": 7959572,
+        "timestamp_utc": "2026-02-18T11:32:00Z",
+        "price_usd": 59.42
+      },
+      {
+        "keepa_minutes": 7959600,
+        "timestamp_utc": "2026-02-18T12:00:00Z",
+        "price_usd": 58.15
+      },
+      {
+        "keepa_minutes": 7959680,
+        "timestamp_utc": "2026-02-18T13:20:00Z",
+        "price_usd": 58.11
+      },
+      {
+        "keepa_minutes": 7959800,
+        "timestamp_utc": "2026-02-18T15:20:00Z",
+        "price_usd": 57.96
+      },
+      {
+        "keepa_minutes": 7959856,
+        "timestamp_utc": "2026-02-18T16:16:00Z",
+        "price_usd": 59.49
+      },
+      {
+        "keepa_minutes": 7959890,
+        "timestamp_utc": "2026-02-18T16:50:00Z",
+        "price_usd": 58.15
+      },
+      {
+        "keepa_minutes": 7960124,
+        "timestamp_utc": "2026-02-18T20:44:00Z",
+        "price_usd": 58.14
+      },
+      {
+        "keepa_minutes": 7960178,
+        "timestamp_utc": "2026-02-18T21:38:00Z",
+        "price_usd": 58.11
+      },
+      {
+        "keepa_minutes": 7960204,
+        "timestamp_utc": "2026-02-18T22:04:00Z",
+        "price_usd": 58.05
+      },
+      {
+        "keepa_minutes": 7960232,
+        "timestamp_utc": "2026-02-18T22:32:00Z",
+        "price_usd": 58.15
+      },
+      {
+        "keepa_minutes": 7960302,
+        "timestamp_utc": "2026-02-18T23:42:00Z",
+        "price_usd": 58.09
+      },
+      {
+        "keepa_minutes": 7960364,
+        "timestamp_utc": "2026-02-19T00:44:00Z",
+        "price_usd": 58.11
+      },
+      {
+        "keepa_minutes": 7960458,
+        "timestamp_utc": "2026-02-19T02:18:00Z",
+        "price_usd": 58.08
+      },
+      {
+        "keepa_minutes": 7960474,
+        "timestamp_utc": "2026-02-19T02:34:00Z",
+        "price_usd": 58.15
+      },
+      {
+        "keepa_minutes": 7960522,
+        "timestamp_utc": "2026-02-19T03:22:00Z",
+        "price_usd": 58.05
+      },
+      {
+        "keepa_minutes": 7960538,
+        "timestamp_utc": "2026-02-19T03:38:00Z",
+        "price_usd": 58.1
+      },
+      {
+        "keepa_minutes": 7960614,
+        "timestamp_utc": "2026-02-19T04:54:00Z",
+        "price_usd": 58.0
+      },
+      {
+        "keepa_minutes": 7961040,
+        "timestamp_utc": "2026-02-19T12:00:00Z",
+        "price_usd": 57.95
+      },
+      {
+        "keepa_minutes": 7961156,
+        "timestamp_utc": "2026-02-19T13:56:00Z",
+        "price_usd": 58.0
+      },
+      {
+        "keepa_minutes": 7961316,
+        "timestamp_utc": "2026-02-19T16:36:00Z",
+        "price_usd": 57.95
+      },
+      {
+        "keepa_minutes": 7961544,
+        "timestamp_utc": "2026-02-19T20:24:00Z",
+        "price_usd": 57.92
+      },
+      {
+        "keepa_minutes": 7961556,
+        "timestamp_utc": "2026-02-19T20:36:00Z",
+        "price_usd": 57.93
+      },
+      {
+        "keepa_minutes": 7961812,
+        "timestamp_utc": "2026-02-20T00:52:00Z",
+        "price_usd": 57.97
+      },
+      {
+        "keepa_minutes": 7961884,
+        "timestamp_utc": "2026-02-20T02:04:00Z",
+        "price_usd": 57.8
+      },
+      {
+        "keepa_minutes": 7961896,
+        "timestamp_utc": "2026-02-20T02:16:00Z",
+        "price_usd": 57.86
+      },
+      {
+        "keepa_minutes": 7961972,
+        "timestamp_utc": "2026-02-20T03:32:00Z",
+        "price_usd": 57.81
+      },
+      {
+        "keepa_minutes": 7962016,
+        "timestamp_utc": "2026-02-20T04:16:00Z",
+        "price_usd": 57.82
+      },
+      {
+        "keepa_minutes": 7962018,
+        "timestamp_utc": "2026-02-20T04:18:00Z",
+        "price_usd": 57.9
+      },
+      {
+        "keepa_minutes": 7962060,
+        "timestamp_utc": "2026-02-20T05:00:00Z",
+        "price_usd": 57.82
+      },
+      {
+        "keepa_minutes": 7962088,
+        "timestamp_utc": "2026-02-20T05:28:00Z",
+        "price_usd": 57.87
+      },
+      {
+        "keepa_minutes": 7962350,
+        "timestamp_utc": "2026-02-20T09:50:00Z",
+        "price_usd": 57.9
+      },
+      {
+        "keepa_minutes": 7962352,
+        "timestamp_utc": "2026-02-20T09:52:00Z",
+        "price_usd": 57.87
+      },
+      {
+        "keepa_minutes": 7962616,
+        "timestamp_utc": "2026-02-20T14:16:00Z",
+        "price_usd": 57.9
+      },
+      {
+        "keepa_minutes": 7962628,
+        "timestamp_utc": "2026-02-20T14:28:00Z",
+        "price_usd": 57.83
+      },
+      {
+        "keepa_minutes": 7962804,
+        "timestamp_utc": "2026-02-20T17:24:00Z",
+        "price_usd": 57.89
+      },
+      {
+        "keepa_minutes": 7962808,
+        "timestamp_utc": "2026-02-20T17:28:00Z",
+        "price_usd": 57.9
+      },
+      {
+        "keepa_minutes": 7962860,
+        "timestamp_utc": "2026-02-20T18:20:00Z",
+        "price_usd": 57.69
+      },
+      {
+        "keepa_minutes": 7962864,
+        "timestamp_utc": "2026-02-20T18:24:00Z",
+        "price_usd": 57.9
+      },
+      {
+        "keepa_minutes": 7962912,
+        "timestamp_utc": "2026-02-20T19:12:00Z",
+        "price_usd": 57.45
+      },
+      {
+        "keepa_minutes": 7962964,
+        "timestamp_utc": "2026-02-20T20:04:00Z",
+        "price_usd": 57.21
+      },
+      {
+        "keepa_minutes": 7963004,
+        "timestamp_utc": "2026-02-20T20:44:00Z",
+        "price_usd": 57.09
+      },
+      {
+        "keepa_minutes": 7963144,
+        "timestamp_utc": "2026-02-20T23:04:00Z",
+        "price_usd": 56.43
+      },
+      {
+        "keepa_minutes": 7963170,
+        "timestamp_utc": "2026-02-20T23:30:00Z",
+        "price_usd": 56.31
+      },
+      {
+        "keepa_minutes": 7963206,
+        "timestamp_utc": "2026-02-21T00:06:00Z",
+        "price_usd": 56.13
+      },
+      {
+        "keepa_minutes": 7963244,
+        "timestamp_utc": "2026-02-21T00:44:00Z",
+        "price_usd": 56.01
+      },
+      {
+        "keepa_minutes": 7963308,
+        "timestamp_utc": "2026-02-21T01:48:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7963444,
+        "timestamp_utc": "2026-02-21T04:04:00Z",
+        "price_usd": 57.45
+      },
+      {
+        "keepa_minutes": 7963532,
+        "timestamp_utc": "2026-02-21T05:32:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7963794,
+        "timestamp_utc": "2026-02-21T09:54:00Z",
+        "price_usd": 57.45
+      },
+      {
+        "keepa_minutes": 7963958,
+        "timestamp_utc": "2026-02-21T12:38:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7964214,
+        "timestamp_utc": "2026-02-21T16:54:00Z",
+        "price_usd": 56.01
+      },
+      {
+        "keepa_minutes": 7964264,
+        "timestamp_utc": "2026-02-21T17:44:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7964428,
+        "timestamp_utc": "2026-02-21T20:28:00Z",
+        "price_usd": 56.01
+      },
+      {
+        "keepa_minutes": 7964532,
+        "timestamp_utc": "2026-02-21T22:12:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7964914,
+        "timestamp_utc": "2026-02-22T04:34:00Z",
+        "price_usd": 57.45
+      },
+      {
+        "keepa_minutes": 7965016,
+        "timestamp_utc": "2026-02-22T06:16:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7965182,
+        "timestamp_utc": "2026-02-22T09:02:00Z",
+        "price_usd": 57.4
+      },
+      {
+        "keepa_minutes": 7965384,
+        "timestamp_utc": "2026-02-22T12:24:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7965632,
+        "timestamp_utc": "2026-02-22T16:32:00Z",
+        "price_usd": 57.45
+      },
+      {
+        "keepa_minutes": 7965650,
+        "timestamp_utc": "2026-02-22T16:50:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7965654,
+        "timestamp_utc": "2026-02-22T16:54:00Z",
+        "price_usd": 57.45
+      },
+      {
+        "keepa_minutes": 7965680,
+        "timestamp_utc": "2026-02-22T17:20:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7966138,
+        "timestamp_utc": "2026-02-23T00:58:00Z",
+        "price_usd": 56.73
+      },
+      {
+        "keepa_minutes": 7966154,
+        "timestamp_utc": "2026-02-23T01:14:00Z",
+        "price_usd": 67.93
+      },
+      {
+        "keepa_minutes": 7966162,
+        "timestamp_utc": "2026-02-23T01:22:00Z",
+        "price_usd": 56.73
+      },
+      {
+        "keepa_minutes": 7966168,
+        "timestamp_utc": "2026-02-23T01:28:00Z",
+        "price_usd": 56.69
+      },
+      {
+        "keepa_minutes": 7966268,
+        "timestamp_utc": "2026-02-23T03:08:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7966270,
+        "timestamp_utc": "2026-02-23T03:10:00Z",
+        "price_usd": 57.35
+      },
+      {
+        "keepa_minutes": 7966312,
+        "timestamp_utc": "2026-02-23T03:52:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7966384,
+        "timestamp_utc": "2026-02-23T05:04:00Z",
+        "price_usd": 57.44
+      },
+      {
+        "keepa_minutes": 7966386,
+        "timestamp_utc": "2026-02-23T05:06:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7967296,
+        "timestamp_utc": "2026-02-23T20:16:00Z",
+        "price_usd": 57.77
+      },
+      {
+        "keepa_minutes": 7967320,
+        "timestamp_utc": "2026-02-23T20:40:00Z",
+        "price_usd": 57.7
+      },
+      {
+        "keepa_minutes": 7967388,
+        "timestamp_utc": "2026-02-23T21:48:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7967480,
+        "timestamp_utc": "2026-02-23T23:20:00Z",
+        "price_usd": 56.87
+      },
+      {
+        "keepa_minutes": 7967516,
+        "timestamp_utc": "2026-02-23T23:56:00Z",
+        "price_usd": 56.91
+      },
+      {
+        "keepa_minutes": 7967662,
+        "timestamp_utc": "2026-02-24T02:22:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7967888,
+        "timestamp_utc": "2026-02-24T06:08:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7967908,
+        "timestamp_utc": "2026-02-24T06:28:00Z",
+        "price_usd": 57.5
+      },
+      {
+        "keepa_minutes": 7967944,
+        "timestamp_utc": "2026-02-24T07:04:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7968100,
+        "timestamp_utc": "2026-02-24T09:40:00Z",
+        "price_usd": 56.75
+      },
+      {
+        "keepa_minutes": 7968234,
+        "timestamp_utc": "2026-02-24T11:54:00Z",
+        "price_usd": 56.98
+      },
+      {
+        "keepa_minutes": 7968296,
+        "timestamp_utc": "2026-02-24T12:56:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7968456,
+        "timestamp_utc": "2026-02-24T15:36:00Z",
+        "price_usd": 56.72
+      },
+      {
+        "keepa_minutes": 7968644,
+        "timestamp_utc": "2026-02-24T18:44:00Z",
+        "price_usd": 56.73
+      },
+      {
+        "keepa_minutes": 7968904,
+        "timestamp_utc": "2026-02-24T23:04:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7968924,
+        "timestamp_utc": "2026-02-24T23:24:00Z",
+        "price_usd": 56.75
+      },
+      {
+        "keepa_minutes": 7968984,
+        "timestamp_utc": "2026-02-25T00:24:00Z",
+        "price_usd": 56.67
+      },
+      {
+        "keepa_minutes": 7969048,
+        "timestamp_utc": "2026-02-25T01:28:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7969092,
+        "timestamp_utc": "2026-02-25T02:12:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7969108,
+        "timestamp_utc": "2026-02-25T02:28:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7969132,
+        "timestamp_utc": "2026-02-25T02:52:00Z",
+        "price_usd": 56.74
+      },
+      {
+        "keepa_minutes": 7969204,
+        "timestamp_utc": "2026-02-25T04:04:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7969334,
+        "timestamp_utc": "2026-02-25T06:14:00Z",
+        "price_usd": 56.7
+      },
+      {
+        "keepa_minutes": 7969336,
+        "timestamp_utc": "2026-02-25T06:16:00Z",
+        "price_usd": 56.75
+      },
+      {
+        "keepa_minutes": 7969366,
+        "timestamp_utc": "2026-02-25T06:46:00Z",
+        "price_usd": 56.56
+      },
+      {
+        "keepa_minutes": 7969392,
+        "timestamp_utc": "2026-02-25T07:12:00Z",
+        "price_usd": 56.54
+      },
+      {
+        "keepa_minutes": 7969476,
+        "timestamp_utc": "2026-02-25T08:36:00Z",
+        "price_usd": 56.49
+      },
+      {
+        "keepa_minutes": 7969580,
+        "timestamp_utc": "2026-02-25T10:20:00Z",
+        "price_usd": 56.45
+      },
+      {
+        "keepa_minutes": 7969608,
+        "timestamp_utc": "2026-02-25T10:48:00Z",
+        "price_usd": 56.36
+      },
+      {
+        "keepa_minutes": 7969744,
+        "timestamp_utc": "2026-02-25T13:04:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7969848,
+        "timestamp_utc": "2026-02-25T14:48:00Z",
+        "price_usd": 57.0
+      },
+      {
+        "keepa_minutes": 7970596,
+        "timestamp_utc": "2026-02-26T03:16:00Z",
+        "price_usd": 55.0
+      },
+      {
+        "keepa_minutes": 7970650,
+        "timestamp_utc": "2026-02-26T04:10:00Z",
+        "price_usd": 54.95
+      },
+      {
+        "keepa_minutes": 7971448,
+        "timestamp_utc": "2026-02-26T17:28:00Z",
+        "price_usd": 54.75
+      },
+      {
+        "keepa_minutes": 7971500,
+        "timestamp_utc": "2026-02-26T18:20:00Z",
+        "price_usd": 49.65
+      },
+      {
+        "keepa_minutes": 7971592,
+        "timestamp_utc": "2026-02-26T19:52:00Z",
+        "price_usd": 54.05
+      },
+      {
+        "keepa_minutes": 7973066,
+        "timestamp_utc": "2026-02-27T20:26:00Z",
+        "price_usd": 55.0
+      },
+      {
+        "keepa_minutes": 7973452,
+        "timestamp_utc": "2026-02-28T02:52:00Z",
+        "price_usd": 54.12
+      },
+      {
+        "keepa_minutes": 7973488,
+        "timestamp_utc": "2026-02-28T03:28:00Z",
+        "price_usd": 54.02
+      },
+      {
+        "keepa_minutes": 7973500,
+        "timestamp_utc": "2026-02-28T03:40:00Z",
+        "price_usd": 53.97
+      },
+      {
+        "keepa_minutes": 7973508,
+        "timestamp_utc": "2026-02-28T03:48:00Z",
+        "price_usd": 53.92
+      },
+      {
+        "keepa_minutes": 7973542,
+        "timestamp_utc": "2026-02-28T04:22:00Z",
+        "price_usd": 53.82
+      },
+      {
+        "keepa_minutes": 7973690,
+        "timestamp_utc": "2026-02-28T06:50:00Z",
+        "price_usd": 53.58
+      },
+      {
+        "keepa_minutes": 7973782,
+        "timestamp_utc": "2026-02-28T08:22:00Z",
+        "price_usd": 51.63
+      },
+      {
+        "keepa_minutes": 7974124,
+        "timestamp_utc": "2026-02-28T14:04:00Z",
+        "price_usd": 49.69
+      },
+      {
+        "keepa_minutes": 7974304,
+        "timestamp_utc": "2026-02-28T17:04:00Z",
+        "price_usd": 53.56
+      },
+      {
+        "keepa_minutes": 7974416,
+        "timestamp_utc": "2026-02-28T18:56:00Z",
+        "price_usd": 53.02
+      },
+      {
+        "keepa_minutes": 7974670,
+        "timestamp_utc": "2026-02-28T23:10:00Z",
+        "price_usd": 52.94
+      },
+      {
+        "keepa_minutes": 7974764,
+        "timestamp_utc": "2026-03-01T00:44:00Z",
+        "price_usd": 53.05
+      },
+      {
+        "keepa_minutes": 7974888,
+        "timestamp_utc": "2026-03-01T02:48:00Z",
+        "price_usd": 52.94
+      },
+      {
+        "keepa_minutes": 7974890,
+        "timestamp_utc": "2026-03-01T02:50:00Z",
+        "price_usd": 53.06
+      },
+      {
+        "keepa_minutes": 7974920,
+        "timestamp_utc": "2026-03-01T03:20:00Z",
+        "price_usd": 53.0
+      },
+      {
+        "keepa_minutes": 7975160,
+        "timestamp_utc": "2026-03-01T07:20:00Z",
+        "price_usd": 52.94
+      },
+      {
+        "keepa_minutes": 7975308,
+        "timestamp_utc": "2026-03-01T09:48:00Z",
+        "price_usd": 53.01
+      },
+      {
+        "keepa_minutes": 7975348,
+        "timestamp_utc": "2026-03-01T10:28:00Z",
+        "price_usd": 53.0
+      },
+      {
+        "keepa_minutes": 7975460,
+        "timestamp_utc": "2026-03-01T12:20:00Z",
+        "price_usd": 53.03
+      },
+      {
+        "keepa_minutes": 7975550,
+        "timestamp_utc": "2026-03-01T13:50:00Z",
+        "price_usd": 52.94
+      },
+      {
+        "keepa_minutes": 7975636,
+        "timestamp_utc": "2026-03-01T15:16:00Z",
+        "price_usd": 53.02
+      },
+      {
+        "keepa_minutes": 7975816,
+        "timestamp_utc": "2026-03-01T18:16:00Z",
+        "price_usd": 52.16
+      },
+      {
+        "keepa_minutes": 7975936,
+        "timestamp_utc": "2026-03-01T20:16:00Z",
+        "price_usd": 51.72
+      },
+      {
+        "keepa_minutes": 7975964,
+        "timestamp_utc": "2026-03-01T20:44:00Z",
+        "price_usd": 51.59
+      },
+      {
+        "keepa_minutes": 7976026,
+        "timestamp_utc": "2026-03-01T21:46:00Z",
+        "price_usd": 51.18
+      },
+      {
+        "keepa_minutes": 7976268,
+        "timestamp_utc": "2026-03-02T01:48:00Z",
+        "price_usd": 49.95
+      },
+      {
+        "keepa_minutes": 7976526,
+        "timestamp_utc": "2026-03-02T06:06:00Z",
+        "price_usd": 50.0
+      },
+      {
+        "keepa_minutes": 7978962,
+        "timestamp_utc": "2026-03-03T22:42:00Z",
+        "price_usd": 50.49
+      },
+      {
+        "keepa_minutes": 7980130,
+        "timestamp_utc": "2026-03-04T18:10:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7980490,
+        "timestamp_utc": "2026-03-05T00:10:00Z",
+        "price_usd": 58.95
+      },
+      {
+        "keepa_minutes": 7980560,
+        "timestamp_utc": "2026-03-05T01:20:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7980680,
+        "timestamp_utc": "2026-03-05T03:20:00Z",
+        "price_usd": 58.95
+      },
+      {
+        "keepa_minutes": 7980682,
+        "timestamp_utc": "2026-03-05T03:22:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7980756,
+        "timestamp_utc": "2026-03-05T04:36:00Z",
+        "price_usd": 58.95
+      },
+      {
+        "keepa_minutes": 7981000,
+        "timestamp_utc": "2026-03-05T08:40:00Z",
+        "price_usd": 58.95
+      },
+      {
+        "keepa_minutes": 7981044,
+        "timestamp_utc": "2026-03-05T09:24:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7981724,
+        "timestamp_utc": "2026-03-05T20:44:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7981892,
+        "timestamp_utc": "2026-03-05T23:32:00Z",
+        "price_usd": 53.0
+      },
+      {
+        "keepa_minutes": 7982432,
+        "timestamp_utc": "2026-03-06T08:32:00Z",
+        "price_usd": 51.84
+      },
+      {
+        "keepa_minutes": 7982692,
+        "timestamp_utc": "2026-03-06T12:52:00Z",
+        "price_usd": 53.73
+      },
+      {
+        "keepa_minutes": 7982720,
+        "timestamp_utc": "2026-03-06T13:20:00Z",
+        "price_usd": 53.88
+      },
+      {
+        "keepa_minutes": 7982762,
+        "timestamp_utc": "2026-03-06T14:02:00Z",
+        "price_usd": 52.83
+      },
+      {
+        "keepa_minutes": 7982920,
+        "timestamp_utc": "2026-03-06T16:40:00Z",
+        "price_usd": 54.73
+      },
+      {
+        "keepa_minutes": 7982988,
+        "timestamp_utc": "2026-03-06T17:48:00Z",
+        "price_usd": 54.75
+      },
+      {
+        "keepa_minutes": 7983052,
+        "timestamp_utc": "2026-03-06T18:52:00Z",
+        "price_usd": 53.95
+      },
+      {
+        "keepa_minutes": 7983220,
+        "timestamp_utc": "2026-03-06T21:40:00Z",
+        "price_usd": 53.92
+      },
+      {
+        "keepa_minutes": 7983292,
+        "timestamp_utc": "2026-03-06T22:52:00Z",
+        "price_usd": 53.9
+      },
+      {
+        "keepa_minutes": 7983500,
+        "timestamp_utc": "2026-03-07T02:20:00Z",
+        "price_usd": 53.84
+      },
+      {
+        "keepa_minutes": 7983552,
+        "timestamp_utc": "2026-03-07T03:12:00Z",
+        "price_usd": 53.81
+      },
+      {
+        "keepa_minutes": 7983756,
+        "timestamp_utc": "2026-03-07T06:36:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7983922,
+        "timestamp_utc": "2026-03-07T09:22:00Z",
+        "price_usd": 58.0
+      },
+      {
+        "keepa_minutes": 7984032,
+        "timestamp_utc": "2026-03-07T11:12:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7984104,
+        "timestamp_utc": "2026-03-07T12:24:00Z",
+        "price_usd": 58.0
+      },
+      {
+        "keepa_minutes": 7984358,
+        "timestamp_utc": "2026-03-07T16:38:00Z",
+        "price_usd": 59.22
+      },
+      {
+        "keepa_minutes": 7984562,
+        "timestamp_utc": "2026-03-07T20:02:00Z",
+        "price_usd": 58.0
+      },
+      {
+        "keepa_minutes": 7984900,
+        "timestamp_utc": "2026-03-08T01:40:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7985052,
+        "timestamp_utc": "2026-03-08T04:12:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7985112,
+        "timestamp_utc": "2026-03-08T05:12:00Z",
+        "price_usd": 58.21
+      },
+      {
+        "keepa_minutes": 7985116,
+        "timestamp_utc": "2026-03-08T05:16:00Z",
+        "price_usd": 58.62
+      },
+      {
+        "keepa_minutes": 7985312,
+        "timestamp_utc": "2026-03-08T08:32:00Z",
+        "price_usd": 57.7
+      },
+      {
+        "keepa_minutes": 7985348,
+        "timestamp_utc": "2026-03-08T09:08:00Z",
+        "price_usd": 57.58
+      },
+      {
+        "keepa_minutes": 7985372,
+        "timestamp_utc": "2026-03-08T09:32:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7985542,
+        "timestamp_utc": "2026-03-08T12:22:00Z",
+        "price_usd": 57.1
+      },
+      {
+        "keepa_minutes": 7985584,
+        "timestamp_utc": "2026-03-08T13:04:00Z",
+        "price_usd": 57.01
+      },
+      {
+        "keepa_minutes": 7985638,
+        "timestamp_utc": "2026-03-08T13:58:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7985640,
+        "timestamp_utc": "2026-03-08T14:00:00Z",
+        "price_usd": 57.42
+      },
+      {
+        "keepa_minutes": 7985646,
+        "timestamp_utc": "2026-03-08T14:06:00Z",
+        "price_usd": 56.86
+      },
+      {
+        "keepa_minutes": 7985736,
+        "timestamp_utc": "2026-03-08T15:36:00Z",
+        "price_usd": 56.65
+      },
+      {
+        "keepa_minutes": 7985750,
+        "timestamp_utc": "2026-03-08T15:50:00Z",
+        "price_usd": 56.59
+      },
+      {
+        "keepa_minutes": 7985888,
+        "timestamp_utc": "2026-03-08T18:08:00Z",
+        "price_usd": 56.23
+      },
+      {
+        "keepa_minutes": 7985994,
+        "timestamp_utc": "2026-03-08T19:54:00Z",
+        "price_usd": 55.99
+      },
+      {
+        "keepa_minutes": 7986220,
+        "timestamp_utc": "2026-03-08T23:40:00Z",
+        "price_usd": 55.7
+      },
+      {
+        "keepa_minutes": 7986270,
+        "timestamp_utc": "2026-03-09T00:30:00Z",
+        "price_usd": 57.34
+      },
+      {
+        "keepa_minutes": 7986324,
+        "timestamp_utc": "2026-03-09T01:24:00Z",
+        "price_usd": 57.19
+      },
+      {
+        "keepa_minutes": 7986368,
+        "timestamp_utc": "2026-03-09T02:08:00Z",
+        "price_usd": 57.38
+      },
+      {
+        "keepa_minutes": 7986460,
+        "timestamp_utc": "2026-03-09T03:40:00Z",
+        "price_usd": 57.23
+      },
+      {
+        "keepa_minutes": 7986464,
+        "timestamp_utc": "2026-03-09T03:44:00Z",
+        "price_usd": 57.32
+      },
+      {
+        "keepa_minutes": 7986468,
+        "timestamp_utc": "2026-03-09T03:48:00Z",
+        "price_usd": 57.2
+      },
+      {
+        "keepa_minutes": 7986480,
+        "timestamp_utc": "2026-03-09T04:00:00Z",
+        "price_usd": 57.17
+      },
+      {
+        "keepa_minutes": 7986530,
+        "timestamp_utc": "2026-03-09T04:50:00Z",
+        "price_usd": 57.29
+      },
+      {
+        "keepa_minutes": 7986576,
+        "timestamp_utc": "2026-03-09T05:36:00Z",
+        "price_usd": 57.93
+      },
+      {
+        "keepa_minutes": 7986580,
+        "timestamp_utc": "2026-03-09T05:40:00Z",
+        "price_usd": 58.08
+      },
+      {
+        "keepa_minutes": 7986582,
+        "timestamp_utc": "2026-03-09T05:42:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7986592,
+        "timestamp_utc": "2026-03-09T05:52:00Z",
+        "price_usd": 57.93
+      },
+      {
+        "keepa_minutes": 7986596,
+        "timestamp_utc": "2026-03-09T05:56:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7986736,
+        "timestamp_utc": "2026-03-09T08:16:00Z",
+        "price_usd": 58.89
+      },
+      {
+        "keepa_minutes": 7986840,
+        "timestamp_utc": "2026-03-09T10:00:00Z",
+        "price_usd": 58.47
+      },
+      {
+        "keepa_minutes": 7986890,
+        "timestamp_utc": "2026-03-09T10:50:00Z",
+        "price_usd": 58.32
+      },
+      {
+        "keepa_minutes": 7986952,
+        "timestamp_utc": "2026-03-09T11:52:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7987072,
+        "timestamp_utc": "2026-03-09T13:52:00Z",
+        "price_usd": 58.56
+      },
+      {
+        "keepa_minutes": 7987196,
+        "timestamp_utc": "2026-03-09T15:56:00Z",
+        "price_usd": 57.22
+      },
+      {
+        "keepa_minutes": 7987396,
+        "timestamp_utc": "2026-03-09T19:16:00Z",
+        "price_usd": 57.32
+      },
+      {
+        "keepa_minutes": 7987468,
+        "timestamp_utc": "2026-03-09T20:28:00Z",
+        "price_usd": 57.21
+      },
+      {
+        "keepa_minutes": 7987652,
+        "timestamp_utc": "2026-03-09T23:32:00Z",
+        "price_usd": 57.06
+      },
+      {
+        "keepa_minutes": 7987722,
+        "timestamp_utc": "2026-03-10T00:42:00Z",
+        "price_usd": 56.91
+      },
+      {
+        "keepa_minutes": 7987924,
+        "timestamp_utc": "2026-03-10T04:04:00Z",
+        "price_usd": 58.07
+      },
+      {
+        "keepa_minutes": 7988068,
+        "timestamp_utc": "2026-03-10T06:28:00Z",
+        "price_usd": 60.99
+      },
+      {
+        "keepa_minutes": 7988230,
+        "timestamp_utc": "2026-03-10T09:10:00Z",
+        "price_usd": 58.06
+      },
+      {
+        "keepa_minutes": 7988372,
+        "timestamp_utc": "2026-03-10T11:32:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7988424,
+        "timestamp_utc": "2026-03-10T12:24:00Z",
+        "price_usd": 63.09
+      },
+      {
+        "keepa_minutes": 7988458,
+        "timestamp_utc": "2026-03-10T12:58:00Z",
+        "price_usd": 63.11
+      },
+      {
+        "keepa_minutes": 7988460,
+        "timestamp_utc": "2026-03-10T13:00:00Z",
+        "price_usd": 59.18
+      },
+      {
+        "keepa_minutes": 7988470,
+        "timestamp_utc": "2026-03-10T13:10:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7988702,
+        "timestamp_utc": "2026-03-10T17:02:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7988710,
+        "timestamp_utc": "2026-03-10T17:10:00Z",
+        "price_usd": 58.04
+      },
+      {
+        "keepa_minutes": 7989010,
+        "timestamp_utc": "2026-03-10T22:10:00Z",
+        "price_usd": 58.03
+      },
+      {
+        "keepa_minutes": 7989012,
+        "timestamp_utc": "2026-03-10T22:12:00Z",
+        "price_usd": 56.0
+      },
+      {
+        "keepa_minutes": 7989016,
+        "timestamp_utc": "2026-03-10T22:16:00Z",
+        "price_usd": 58.03
+      },
+      {
+        "keepa_minutes": 7989044,
+        "timestamp_utc": "2026-03-10T22:44:00Z",
+        "price_usd": 58.03
+      },
+      {
+        "keepa_minutes": 7989132,
+        "timestamp_utc": "2026-03-11T00:12:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7989322,
+        "timestamp_utc": "2026-03-11T03:22:00Z",
+        "price_usd": 57.99
+      },
+      {
+        "keepa_minutes": 7989376,
+        "timestamp_utc": "2026-03-11T04:16:00Z",
+        "price_usd": 57.99
+      },
+      {
+        "keepa_minutes": 7989384,
+        "timestamp_utc": "2026-03-11T04:24:00Z",
+        "price_usd": 57.84
+      },
+      {
+        "keepa_minutes": 7989444,
+        "timestamp_utc": "2026-03-11T05:24:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7989480,
+        "timestamp_utc": "2026-03-11T06:00:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7989514,
+        "timestamp_utc": "2026-03-11T06:34:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7989516,
+        "timestamp_utc": "2026-03-11T06:36:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7989528,
+        "timestamp_utc": "2026-03-11T06:48:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7989668,
+        "timestamp_utc": "2026-03-11T09:08:00Z",
+        "price_usd": 58.88
+      },
+      {
+        "keepa_minutes": 7989744,
+        "timestamp_utc": "2026-03-11T10:24:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7989870,
+        "timestamp_utc": "2026-03-11T12:30:00Z",
+        "price_usd": 53.0
+      },
+      {
+        "keepa_minutes": 7989896,
+        "timestamp_utc": "2026-03-11T12:56:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7989934,
+        "timestamp_utc": "2026-03-11T13:34:00Z",
+        "price_usd": 53.44
+      },
+      {
+        "keepa_minutes": 7990052,
+        "timestamp_utc": "2026-03-11T15:32:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7990896,
+        "timestamp_utc": "2026-03-12T05:36:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7991338,
+        "timestamp_utc": "2026-03-12T12:58:00Z",
+        "price_usd": 53.64
+      },
+      {
+        "keepa_minutes": 7991400,
+        "timestamp_utc": "2026-03-12T14:00:00Z",
+        "price_usd": 53.61
+      },
+      {
+        "keepa_minutes": 7991552,
+        "timestamp_utc": "2026-03-12T16:32:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7991564,
+        "timestamp_utc": "2026-03-12T16:44:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7991668,
+        "timestamp_utc": "2026-03-12T18:28:00Z",
+        "price_usd": 53.61
+      },
+      {
+        "keepa_minutes": 7991712,
+        "timestamp_utc": "2026-03-12T19:12:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7991720,
+        "timestamp_utc": "2026-03-12T19:20:00Z",
+        "price_usd": 53.61
+      },
+      {
+        "keepa_minutes": 7991860,
+        "timestamp_utc": "2026-03-12T21:40:00Z",
+        "price_usd": 53.69
+      },
+      {
+        "keepa_minutes": 7991928,
+        "timestamp_utc": "2026-03-12T22:48:00Z",
+        "price_usd": 53.61
+      },
+      {
+        "keepa_minutes": 7991986,
+        "timestamp_utc": "2026-03-12T23:46:00Z",
+        "price_usd": 53.0
+      },
+      {
+        "keepa_minutes": 7992008,
+        "timestamp_utc": "2026-03-13T00:08:00Z",
+        "price_usd": 52.21
+      },
+      {
+        "keepa_minutes": 7992054,
+        "timestamp_utc": "2026-03-13T00:54:00Z",
+        "price_usd": 53.0
+      },
+      {
+        "keepa_minutes": 7992120,
+        "timestamp_utc": "2026-03-13T02:00:00Z",
+        "price_usd": 52.16
+      },
+      {
+        "keepa_minutes": 7992882,
+        "timestamp_utc": "2026-03-13T14:42:00Z",
+        "price_usd": 50.68
+      },
+      {
+        "keepa_minutes": 7992912,
+        "timestamp_utc": "2026-03-13T15:12:00Z",
+        "price_usd": 52.16
+      },
+      {
+        "keepa_minutes": 7992916,
+        "timestamp_utc": "2026-03-13T15:16:00Z",
+        "price_usd": 52.16
+      },
+      {
+        "keepa_minutes": 7993214,
+        "timestamp_utc": "2026-03-13T20:14:00Z",
+        "price_usd": 54.75
+      },
+      {
+        "keepa_minutes": 7993320,
+        "timestamp_utc": "2026-03-13T22:00:00Z",
+        "price_usd": 52.16
+      },
+      {
+        "keepa_minutes": 7994610,
+        "timestamp_utc": "2026-03-14T19:30:00Z",
+        "price_usd": 52.16
+      },
+      {
+        "keepa_minutes": 7994956,
+        "timestamp_utc": "2026-03-15T01:16:00Z",
+        "price_usd": 56.42
+      },
+      {
+        "keepa_minutes": 7995008,
+        "timestamp_utc": "2026-03-15T02:08:00Z",
+        "price_usd": 56.52
+      },
+      {
+        "keepa_minutes": 7995106,
+        "timestamp_utc": "2026-03-15T03:46:00Z",
+        "price_usd": 54.75
+      },
+      {
+        "keepa_minutes": 7995198,
+        "timestamp_utc": "2026-03-15T05:18:00Z",
+        "price_usd": 56.36
+      },
+      {
+        "keepa_minutes": 7995262,
+        "timestamp_utc": "2026-03-15T06:22:00Z",
+        "price_usd": 56.32
+      },
+      {
+        "keepa_minutes": 7995444,
+        "timestamp_utc": "2026-03-15T09:24:00Z",
+        "price_usd": 55.0
+      },
+      {
+        "keepa_minutes": 7995632,
+        "timestamp_utc": "2026-03-15T12:32:00Z",
+        "price_usd": 58.71
+      },
+      {
+        "keepa_minutes": 7995634,
+        "timestamp_utc": "2026-03-15T12:34:00Z",
+        "price_usd": 55.0
+      },
+      {
+        "keepa_minutes": 7995816,
+        "timestamp_utc": "2026-03-15T15:36:00Z",
+        "price_usd": 56.32
+      },
+      {
+        "keepa_minutes": 7995830,
+        "timestamp_utc": "2026-03-15T15:50:00Z",
+        "price_usd": 53.59
+      },
+      {
+        "keepa_minutes": 7995928,
+        "timestamp_utc": "2026-03-15T17:28:00Z",
+        "price_usd": 53.9
+      },
+      {
+        "keepa_minutes": 7995932,
+        "timestamp_utc": "2026-03-15T17:32:00Z",
+        "price_usd": 54.0
+      },
+      {
+        "keepa_minutes": 7996008,
+        "timestamp_utc": "2026-03-15T18:48:00Z",
+        "price_usd": 56.38
+      },
+      {
+        "keepa_minutes": 7996052,
+        "timestamp_utc": "2026-03-15T19:32:00Z",
+        "price_usd": 54.75
+      },
+      {
+        "keepa_minutes": 7996174,
+        "timestamp_utc": "2026-03-15T21:34:00Z",
+        "price_usd": 56.34
+      },
+      {
+        "keepa_minutes": 7996224,
+        "timestamp_utc": "2026-03-15T22:24:00Z",
+        "price_usd": 56.35
+      },
+      {
+        "keepa_minutes": 7996264,
+        "timestamp_utc": "2026-03-15T23:04:00Z",
+        "price_usd": 56.04
+      },
+      {
+        "keepa_minutes": 7996338,
+        "timestamp_utc": "2026-03-16T00:18:00Z",
+        "price_usd": 56.37
+      },
+      {
+        "keepa_minutes": 7996460,
+        "timestamp_utc": "2026-03-16T02:20:00Z",
+        "price_usd": 56.78
+      },
+      {
+        "keepa_minutes": 7996576,
+        "timestamp_utc": "2026-03-16T04:16:00Z",
+        "price_usd": 57.03
+      },
+      {
+        "keepa_minutes": 7996644,
+        "timestamp_utc": "2026-03-16T05:24:00Z",
+        "price_usd": 56.35
+      },
+      {
+        "keepa_minutes": 7996648,
+        "timestamp_utc": "2026-03-16T05:28:00Z",
+        "price_usd": 52.05
+      },
+      {
+        "keepa_minutes": 7996724,
+        "timestamp_utc": "2026-03-16T06:44:00Z",
+        "price_usd": 56.03
+      },
+      {
+        "keepa_minutes": 7996910,
+        "timestamp_utc": "2026-03-16T09:50:00Z",
+        "price_usd": 56.27
+      },
+      {
+        "keepa_minutes": 7996988,
+        "timestamp_utc": "2026-03-16T11:08:00Z",
+        "price_usd": 57.16
+      },
+      {
+        "keepa_minutes": 7997200,
+        "timestamp_utc": "2026-03-16T14:40:00Z",
+        "price_usd": 57.25
+      },
+      {
+        "keepa_minutes": 7997210,
+        "timestamp_utc": "2026-03-16T14:50:00Z",
+        "price_usd": 52.05
+      },
+      {
+        "keepa_minutes": 7997232,
+        "timestamp_utc": "2026-03-16T15:12:00Z",
+        "price_usd": 57.25
+      },
+      {
+        "keepa_minutes": 7997282,
+        "timestamp_utc": "2026-03-16T16:02:00Z",
+        "price_usd": 52.0
+      },
+      {
+        "keepa_minutes": 7997346,
+        "timestamp_utc": "2026-03-16T17:06:00Z",
+        "price_usd": 56.34
+      },
+      {
+        "keepa_minutes": 7997440,
+        "timestamp_utc": "2026-03-16T18:40:00Z",
+        "price_usd": 56.46
+      },
+      {
+        "keepa_minutes": 7997456,
+        "timestamp_utc": "2026-03-16T18:56:00Z",
+        "price_usd": 52.0
+      },
+      {
+        "keepa_minutes": 7997504,
+        "timestamp_utc": "2026-03-16T19:44:00Z",
+        "price_usd": 51.95
+      },
+      {
+        "keepa_minutes": 7997544,
+        "timestamp_utc": "2026-03-16T20:24:00Z",
+        "price_usd": 52.0
+      },
+      {
+        "keepa_minutes": 7997546,
+        "timestamp_utc": "2026-03-16T20:26:00Z",
+        "price_usd": 53.15
+      },
+      {
+        "keepa_minutes": 7997568,
+        "timestamp_utc": "2026-03-16T20:48:00Z",
+        "price_usd": 56.4
+      },
+      {
+        "keepa_minutes": 7997740,
+        "timestamp_utc": "2026-03-16T23:40:00Z",
+        "price_usd": 56.43
+      },
+      {
+        "keepa_minutes": 7997810,
+        "timestamp_utc": "2026-03-17T00:50:00Z",
+        "price_usd": 52.0
+      },
+      {
+        "keepa_minutes": 7997890,
+        "timestamp_utc": "2026-03-17T02:10:00Z",
+        "price_usd": 56.5
+      },
+      {
+        "keepa_minutes": 7997946,
+        "timestamp_utc": "2026-03-17T03:06:00Z",
+        "price_usd": 56.43
+      },
+      {
+        "keepa_minutes": 7998112,
+        "timestamp_utc": "2026-03-17T05:52:00Z",
+        "price_usd": 56.24
+      },
+      {
+        "keepa_minutes": 7998240,
+        "timestamp_utc": "2026-03-17T08:00:00Z",
+        "price_usd": 53.44
+      },
+      {
+        "keepa_minutes": 7998250,
+        "timestamp_utc": "2026-03-17T08:10:00Z",
+        "price_usd": 53.39
+      },
+      {
+        "keepa_minutes": 7998312,
+        "timestamp_utc": "2026-03-17T09:12:00Z",
+        "price_usd": 56.37
+      },
+      {
+        "keepa_minutes": 7999068,
+        "timestamp_utc": "2026-03-17T21:48:00Z",
+        "price_usd": 51.93
+      },
+      {
+        "keepa_minutes": 7999080,
+        "timestamp_utc": "2026-03-17T22:00:00Z",
+        "price_usd": 56.37
+      }
+    ],
+    "buy_box_seller_history": [
+      {
+        "keepa_minutes": 7955962,
+        "timestamp_utc": "2026-02-15T23:22:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7956606,
+        "timestamp_utc": "2026-02-16T10:06:00Z",
+        "seller_id": "A1H4WHLNQXFU29"
+      },
+      {
+        "keepa_minutes": 7956624,
+        "timestamp_utc": "2026-02-16T10:24:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7956704,
+        "timestamp_utc": "2026-02-16T11:44:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7956878,
+        "timestamp_utc": "2026-02-16T14:38:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7956960,
+        "timestamp_utc": "2026-02-16T16:00:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7957032,
+        "timestamp_utc": "2026-02-16T17:12:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7957462,
+        "timestamp_utc": "2026-02-17T00:22:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7957652,
+        "timestamp_utc": "2026-02-17T03:32:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7957700,
+        "timestamp_utc": "2026-02-17T04:20:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7957936,
+        "timestamp_utc": "2026-02-17T08:16:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7958164,
+        "timestamp_utc": "2026-02-17T12:04:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7958444,
+        "timestamp_utc": "2026-02-17T16:44:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7958720,
+        "timestamp_utc": "2026-02-17T21:20:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7958760,
+        "timestamp_utc": "2026-02-17T22:00:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7958932,
+        "timestamp_utc": "2026-02-18T00:52:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7958944,
+        "timestamp_utc": "2026-02-18T01:04:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7959132,
+        "timestamp_utc": "2026-02-18T04:12:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7959264,
+        "timestamp_utc": "2026-02-18T06:24:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7959308,
+        "timestamp_utc": "2026-02-18T07:08:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7959572,
+        "timestamp_utc": "2026-02-18T11:32:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7959600,
+        "timestamp_utc": "2026-02-18T12:00:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7959680,
+        "timestamp_utc": "2026-02-18T13:20:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7959800,
+        "timestamp_utc": "2026-02-18T15:20:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7959890,
+        "timestamp_utc": "2026-02-18T16:50:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7960124,
+        "timestamp_utc": "2026-02-18T20:44:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7960232,
+        "timestamp_utc": "2026-02-18T22:32:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7960302,
+        "timestamp_utc": "2026-02-18T23:42:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7960364,
+        "timestamp_utc": "2026-02-19T00:44:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7960458,
+        "timestamp_utc": "2026-02-19T02:18:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7960474,
+        "timestamp_utc": "2026-02-19T02:34:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7960522,
+        "timestamp_utc": "2026-02-19T03:22:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7960614,
+        "timestamp_utc": "2026-02-19T04:54:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7960708,
+        "timestamp_utc": "2026-02-19T06:28:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7960860,
+        "timestamp_utc": "2026-02-19T09:00:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7961040,
+        "timestamp_utc": "2026-02-19T12:00:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7961156,
+        "timestamp_utc": "2026-02-19T13:56:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7961316,
+        "timestamp_utc": "2026-02-19T16:36:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7961544,
+        "timestamp_utc": "2026-02-19T20:24:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7961812,
+        "timestamp_utc": "2026-02-20T00:52:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7961884,
+        "timestamp_utc": "2026-02-20T02:04:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7961896,
+        "timestamp_utc": "2026-02-20T02:16:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7961972,
+        "timestamp_utc": "2026-02-20T03:32:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7962018,
+        "timestamp_utc": "2026-02-20T04:18:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7962060,
+        "timestamp_utc": "2026-02-20T05:00:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7962088,
+        "timestamp_utc": "2026-02-20T05:28:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7962188,
+        "timestamp_utc": "2026-02-20T07:08:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7962350,
+        "timestamp_utc": "2026-02-20T09:50:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7962352,
+        "timestamp_utc": "2026-02-20T09:52:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7962616,
+        "timestamp_utc": "2026-02-20T14:16:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7962628,
+        "timestamp_utc": "2026-02-20T14:28:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7962808,
+        "timestamp_utc": "2026-02-20T17:28:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7962864,
+        "timestamp_utc": "2026-02-20T18:24:00Z",
+        "seller_id": "A15UY3S29L4ILM"
+      },
+      {
+        "keepa_minutes": 7962912,
+        "timestamp_utc": "2026-02-20T19:12:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7963308,
+        "timestamp_utc": "2026-02-21T01:48:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7963380,
+        "timestamp_utc": "2026-02-21T03:00:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7963402,
+        "timestamp_utc": "2026-02-21T03:22:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7963412,
+        "timestamp_utc": "2026-02-21T03:32:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7963440,
+        "timestamp_utc": "2026-02-21T04:00:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7963444,
+        "timestamp_utc": "2026-02-21T04:04:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7963532,
+        "timestamp_utc": "2026-02-21T05:32:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7963772,
+        "timestamp_utc": "2026-02-21T09:32:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7963794,
+        "timestamp_utc": "2026-02-21T09:54:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7963958,
+        "timestamp_utc": "2026-02-21T12:38:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7964264,
+        "timestamp_utc": "2026-02-21T17:44:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7964532,
+        "timestamp_utc": "2026-02-21T22:12:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7964914,
+        "timestamp_utc": "2026-02-22T04:34:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7965016,
+        "timestamp_utc": "2026-02-22T06:16:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7965182,
+        "timestamp_utc": "2026-02-22T09:02:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7965384,
+        "timestamp_utc": "2026-02-22T12:24:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7965632,
+        "timestamp_utc": "2026-02-22T16:32:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7965650,
+        "timestamp_utc": "2026-02-22T16:50:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7965654,
+        "timestamp_utc": "2026-02-22T16:54:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7965680,
+        "timestamp_utc": "2026-02-22T17:20:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7966138,
+        "timestamp_utc": "2026-02-23T00:58:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7966154,
+        "timestamp_utc": "2026-02-23T01:14:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7966162,
+        "timestamp_utc": "2026-02-23T01:22:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7966168,
+        "timestamp_utc": "2026-02-23T01:28:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7966268,
+        "timestamp_utc": "2026-02-23T03:08:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7966270,
+        "timestamp_utc": "2026-02-23T03:10:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7966312,
+        "timestamp_utc": "2026-02-23T03:52:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7966384,
+        "timestamp_utc": "2026-02-23T05:04:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7966386,
+        "timestamp_utc": "2026-02-23T05:06:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7967296,
+        "timestamp_utc": "2026-02-23T20:16:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7967388,
+        "timestamp_utc": "2026-02-23T21:48:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7967480,
+        "timestamp_utc": "2026-02-23T23:20:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7967516,
+        "timestamp_utc": "2026-02-23T23:56:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7967662,
+        "timestamp_utc": "2026-02-24T02:22:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7967888,
+        "timestamp_utc": "2026-02-24T06:08:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7967908,
+        "timestamp_utc": "2026-02-24T06:28:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7967944,
+        "timestamp_utc": "2026-02-24T07:04:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7968100,
+        "timestamp_utc": "2026-02-24T09:40:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7968296,
+        "timestamp_utc": "2026-02-24T12:56:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7968456,
+        "timestamp_utc": "2026-02-24T15:36:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7968904,
+        "timestamp_utc": "2026-02-24T23:04:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7968922,
+        "timestamp_utc": "2026-02-24T23:22:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7968924,
+        "timestamp_utc": "2026-02-24T23:24:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7968984,
+        "timestamp_utc": "2026-02-25T00:24:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7969092,
+        "timestamp_utc": "2026-02-25T02:12:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7969108,
+        "timestamp_utc": "2026-02-25T02:28:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7969132,
+        "timestamp_utc": "2026-02-25T02:52:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7969336,
+        "timestamp_utc": "2026-02-25T06:16:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7969366,
+        "timestamp_utc": "2026-02-25T06:46:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7969608,
+        "timestamp_utc": "2026-02-25T10:48:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7969744,
+        "timestamp_utc": "2026-02-25T13:04:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7969848,
+        "timestamp_utc": "2026-02-25T14:48:00Z",
+        "seller_id": "A2JHZXYORHV6TN"
+      },
+      {
+        "keepa_minutes": 7970596,
+        "timestamp_utc": "2026-02-26T03:16:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7971500,
+        "timestamp_utc": "2026-02-26T18:20:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7971592,
+        "timestamp_utc": "2026-02-26T19:52:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7973066,
+        "timestamp_utc": "2026-02-27T20:26:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7973452,
+        "timestamp_utc": "2026-02-28T02:52:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7973690,
+        "timestamp_utc": "2026-02-28T06:50:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7973782,
+        "timestamp_utc": "2026-02-28T08:22:00Z",
+        "seller_id": "AFHOBLW03OKDG"
+      },
+      {
+        "keepa_minutes": 7974124,
+        "timestamp_utc": "2026-02-28T14:04:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7974304,
+        "timestamp_utc": "2026-02-28T17:04:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7974670,
+        "timestamp_utc": "2026-02-28T23:10:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7974764,
+        "timestamp_utc": "2026-03-01T00:44:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7974888,
+        "timestamp_utc": "2026-03-01T02:48:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7974890,
+        "timestamp_utc": "2026-03-01T02:50:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7975160,
+        "timestamp_utc": "2026-03-01T07:20:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7975308,
+        "timestamp_utc": "2026-03-01T09:48:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7975550,
+        "timestamp_utc": "2026-03-01T13:50:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7975636,
+        "timestamp_utc": "2026-03-01T15:16:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7975816,
+        "timestamp_utc": "2026-03-01T18:16:00Z",
+        "seller_id": "A19GQNH8SPQTZJ"
+      },
+      {
+        "keepa_minutes": 7976526,
+        "timestamp_utc": "2026-03-02T06:06:00Z",
+        "seller_id": "A8YDEJK9N1IVR"
+      },
+      {
+        "keepa_minutes": 7978962,
+        "timestamp_utc": "2026-03-03T22:42:00Z",
+        "seller_id": "A2NQT5PBL3WAIV"
+      },
+      {
+        "keepa_minutes": 7980130,
+        "timestamp_utc": "2026-03-04T18:10:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7980490,
+        "timestamp_utc": "2026-03-05T00:10:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7980560,
+        "timestamp_utc": "2026-03-05T01:20:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7980680,
+        "timestamp_utc": "2026-03-05T03:20:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7980682,
+        "timestamp_utc": "2026-03-05T03:22:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7980756,
+        "timestamp_utc": "2026-03-05T04:36:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7981044,
+        "timestamp_utc": "2026-03-05T09:24:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7981892,
+        "timestamp_utc": "2026-03-05T23:32:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7982432,
+        "timestamp_utc": "2026-03-06T08:32:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7982692,
+        "timestamp_utc": "2026-03-06T12:52:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7982720,
+        "timestamp_utc": "2026-03-06T13:20:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7982920,
+        "timestamp_utc": "2026-03-06T16:40:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7982988,
+        "timestamp_utc": "2026-03-06T17:48:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7983052,
+        "timestamp_utc": "2026-03-06T18:52:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7983756,
+        "timestamp_utc": "2026-03-07T06:36:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7983922,
+        "timestamp_utc": "2026-03-07T09:22:00Z",
+        "seller_id": "A2LDMAFXRZ73BV"
+      },
+      {
+        "keepa_minutes": 7984032,
+        "timestamp_utc": "2026-03-07T11:12:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7984104,
+        "timestamp_utc": "2026-03-07T12:24:00Z",
+        "seller_id": "A2LDMAFXRZ73BV"
+      },
+      {
+        "keepa_minutes": 7984358,
+        "timestamp_utc": "2026-03-07T16:38:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7984562,
+        "timestamp_utc": "2026-03-07T20:02:00Z",
+        "seller_id": "A2LDMAFXRZ73BV"
+      },
+      {
+        "keepa_minutes": 7984900,
+        "timestamp_utc": "2026-03-08T01:40:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7985112,
+        "timestamp_utc": "2026-03-08T05:12:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7985116,
+        "timestamp_utc": "2026-03-08T05:16:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7985312,
+        "timestamp_utc": "2026-03-08T08:32:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7985372,
+        "timestamp_utc": "2026-03-08T09:32:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7985542,
+        "timestamp_utc": "2026-03-08T12:22:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7985638,
+        "timestamp_utc": "2026-03-08T13:58:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7985640,
+        "timestamp_utc": "2026-03-08T14:00:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7985646,
+        "timestamp_utc": "2026-03-08T14:06:00Z",
+        "seller_id": "AYQ3H46CUYEAL"
+      },
+      {
+        "keepa_minutes": 7986270,
+        "timestamp_utc": "2026-03-09T00:30:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7986324,
+        "timestamp_utc": "2026-03-09T01:24:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7986368,
+        "timestamp_utc": "2026-03-09T02:08:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7986460,
+        "timestamp_utc": "2026-03-09T03:40:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7986464,
+        "timestamp_utc": "2026-03-09T03:44:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7986468,
+        "timestamp_utc": "2026-03-09T03:48:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7986580,
+        "timestamp_utc": "2026-03-09T05:40:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7986582,
+        "timestamp_utc": "2026-03-09T05:42:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7986592,
+        "timestamp_utc": "2026-03-09T05:52:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7986596,
+        "timestamp_utc": "2026-03-09T05:56:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7986736,
+        "timestamp_utc": "2026-03-09T08:16:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7986840,
+        "timestamp_utc": "2026-03-09T10:00:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7986890,
+        "timestamp_utc": "2026-03-09T10:50:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7986952,
+        "timestamp_utc": "2026-03-09T11:52:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7987072,
+        "timestamp_utc": "2026-03-09T13:52:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7987396,
+        "timestamp_utc": "2026-03-09T19:16:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7987468,
+        "timestamp_utc": "2026-03-09T20:28:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7987620,
+        "timestamp_utc": "2026-03-09T23:00:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7987652,
+        "timestamp_utc": "2026-03-09T23:32:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7987924,
+        "timestamp_utc": "2026-03-10T04:04:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7988068,
+        "timestamp_utc": "2026-03-10T06:28:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7988230,
+        "timestamp_utc": "2026-03-10T09:10:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7988372,
+        "timestamp_utc": "2026-03-10T11:32:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7988424,
+        "timestamp_utc": "2026-03-10T12:24:00Z",
+        "seller_id": "A2QV30D5F7JGBB"
+      },
+      {
+        "keepa_minutes": 7988460,
+        "timestamp_utc": "2026-03-10T13:00:00Z",
+        "seller_id": "AG3XXYDNHSHA3"
+      },
+      {
+        "keepa_minutes": 7988470,
+        "timestamp_utc": "2026-03-10T13:10:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7988702,
+        "timestamp_utc": "2026-03-10T17:02:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7988710,
+        "timestamp_utc": "2026-03-10T17:10:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7989012,
+        "timestamp_utc": "2026-03-10T22:12:00Z",
+        "seller_id": "AYR4ETUJVKCPM"
+      },
+      {
+        "keepa_minutes": 7989016,
+        "timestamp_utc": "2026-03-10T22:16:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7989132,
+        "timestamp_utc": "2026-03-11T00:12:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7989322,
+        "timestamp_utc": "2026-03-11T03:22:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7989384,
+        "timestamp_utc": "2026-03-11T04:24:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7989444,
+        "timestamp_utc": "2026-03-11T05:24:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7989480,
+        "timestamp_utc": "2026-03-11T06:00:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7989514,
+        "timestamp_utc": "2026-03-11T06:34:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7989516,
+        "timestamp_utc": "2026-03-11T06:36:00Z",
+        "seller_id": "A2FHX26YUJ7DOI"
+      },
+      {
+        "keepa_minutes": 7989528,
+        "timestamp_utc": "2026-03-11T06:48:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7989744,
+        "timestamp_utc": "2026-03-11T10:24:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7989870,
+        "timestamp_utc": "2026-03-11T12:30:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7989896,
+        "timestamp_utc": "2026-03-11T12:56:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7989934,
+        "timestamp_utc": "2026-03-11T13:34:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7990052,
+        "timestamp_utc": "2026-03-11T15:32:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7990428,
+        "timestamp_utc": "2026-03-11T21:48:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7990586,
+        "timestamp_utc": "2026-03-12T00:26:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7991252,
+        "timestamp_utc": "2026-03-12T11:32:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7991712,
+        "timestamp_utc": "2026-03-12T19:12:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7991720,
+        "timestamp_utc": "2026-03-12T19:20:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7991860,
+        "timestamp_utc": "2026-03-12T21:40:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7991928,
+        "timestamp_utc": "2026-03-12T22:48:00Z",
+        "seller_id": "A2D617YD3K078M"
+      },
+      {
+        "keepa_minutes": 7991986,
+        "timestamp_utc": "2026-03-12T23:46:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7992008,
+        "timestamp_utc": "2026-03-13T00:08:00Z",
+        "seller_id": "ADG10GOGXZ5W2"
+      },
+      {
+        "keepa_minutes": 7992054,
+        "timestamp_utc": "2026-03-13T00:54:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7992882,
+        "timestamp_utc": "2026-03-13T14:42:00Z",
+        "seller_id": "ADG10GOGXZ5W2"
+      },
+      {
+        "keepa_minutes": 7992912,
+        "timestamp_utc": "2026-03-13T15:12:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7993214,
+        "timestamp_utc": "2026-03-13T20:14:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7993320,
+        "timestamp_utc": "2026-03-13T22:00:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7994610,
+        "timestamp_utc": "2026-03-14T19:30:00Z",
+        "seller_id": "AG3XXYDNHSHA3"
+      },
+      {
+        "keepa_minutes": 7994620,
+        "timestamp_utc": "2026-03-14T19:40:00Z",
+        "seller_id": "A2WLM1B2K5TGKR"
+      },
+      {
+        "keepa_minutes": 7994956,
+        "timestamp_utc": "2026-03-15T01:16:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7995106,
+        "timestamp_utc": "2026-03-15T03:46:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7995198,
+        "timestamp_utc": "2026-03-15T05:18:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7995444,
+        "timestamp_utc": "2026-03-15T09:24:00Z",
+        "seller_id": "AFT9XAP0X7YI3"
+      },
+      {
+        "keepa_minutes": 7995632,
+        "timestamp_utc": "2026-03-15T12:32:00Z",
+        "seller_id": "ATOP0XT4Q6YCL"
+      },
+      {
+        "keepa_minutes": 7995634,
+        "timestamp_utc": "2026-03-15T12:34:00Z",
+        "seller_id": "AFT9XAP0X7YI3"
+      },
+      {
+        "keepa_minutes": 7995816,
+        "timestamp_utc": "2026-03-15T15:36:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7995830,
+        "timestamp_utc": "2026-03-15T15:50:00Z",
+        "seller_id": "ADG10GOGXZ5W2"
+      },
+      {
+        "keepa_minutes": 7995932,
+        "timestamp_utc": "2026-03-15T17:32:00Z",
+        "seller_id": "AG3XXYDNHSHA3"
+      },
+      {
+        "keepa_minutes": 7996008,
+        "timestamp_utc": "2026-03-15T18:48:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7996052,
+        "timestamp_utc": "2026-03-15T19:32:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7996174,
+        "timestamp_utc": "2026-03-15T21:34:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7996264,
+        "timestamp_utc": "2026-03-15T23:04:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7996338,
+        "timestamp_utc": "2026-03-16T00:18:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7996460,
+        "timestamp_utc": "2026-03-16T02:20:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7996644,
+        "timestamp_utc": "2026-03-16T05:24:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7996648,
+        "timestamp_utc": "2026-03-16T05:28:00Z",
+        "seller_id": "A26MR2XTUWU7C6"
+      },
+      {
+        "keepa_minutes": 7996724,
+        "timestamp_utc": "2026-03-16T06:44:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7997210,
+        "timestamp_utc": "2026-03-16T14:50:00Z",
+        "seller_id": "A26MR2XTUWU7C6"
+      },
+      {
+        "keepa_minutes": 7997232,
+        "timestamp_utc": "2026-03-16T15:12:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7997282,
+        "timestamp_utc": "2026-03-16T16:02:00Z",
+        "seller_id": "ADG10GOGXZ5W2"
+      },
+      {
+        "keepa_minutes": 7997346,
+        "timestamp_utc": "2026-03-16T17:06:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7997456,
+        "timestamp_utc": "2026-03-16T18:56:00Z",
+        "seller_id": "A26MR2XTUWU7C6"
+      },
+      {
+        "keepa_minutes": 7997504,
+        "timestamp_utc": "2026-03-16T19:44:00Z",
+        "seller_id": "ADG10GOGXZ5W2"
+      },
+      {
+        "keepa_minutes": 7997544,
+        "timestamp_utc": "2026-03-16T20:24:00Z",
+        "seller_id": "A26MR2XTUWU7C6"
+      },
+      {
+        "keepa_minutes": 7997546,
+        "timestamp_utc": "2026-03-16T20:26:00Z",
+        "seller_id": "AG3XXYDNHSHA3"
+      },
+      {
+        "keepa_minutes": 7997568,
+        "timestamp_utc": "2026-03-16T20:48:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7997810,
+        "timestamp_utc": "2026-03-17T00:50:00Z",
+        "seller_id": "A26MR2XTUWU7C6"
+      },
+      {
+        "keepa_minutes": 7997890,
+        "timestamp_utc": "2026-03-17T02:10:00Z",
+        "seller_id": "ARTSBOTVL7Z2Y"
+      },
+      {
+        "keepa_minutes": 7998112,
+        "timestamp_utc": "2026-03-17T05:52:00Z",
+        "seller_id": "ASHT9RG2Z8D6D"
+      },
+      {
+        "keepa_minutes": 7998240,
+        "timestamp_utc": "2026-03-17T08:00:00Z",
+        "seller_id": "A2FE8GLCXQOJUO"
+      },
+      {
+        "keepa_minutes": 7998312,
+        "timestamp_utc": "2026-03-17T09:12:00Z",
+        "seller_id": "A39AD8H5Z9939G"
+      },
+      {
+        "keepa_minutes": 7999068,
+        "timestamp_utc": "2026-03-17T21:48:00Z",
+        "seller_id": "A26MR2XTUWU7C6"
+      },
+      {
+        "keepa_minutes": 7999080,
+        "timestamp_utc": "2026-03-17T22:00:00Z",
+        "seller_id": "A39AD8H5Z9939G"
+      }
+    ]
+  },
+  "fee_context": {
+    "estimated_sell_price_mid_bb": 54.58,
+    "buy_box_range_current": "52.16-57.00",
+    "amazon_fees_total": 12.18,
+    "referral_fee": 8.19,
+    "fba_fulfillment_fee": 0,
+    "fee_breakdown": {
+      "ReferralFee": 8.19,
+      "VariableClosingFee": 0.0,
+      "PerItemFee": 0.0,
+      "FBAFees": 3.99
+    },
+    "package_weight_grams": 32.0,
+    "inbound_shipping_rate_per_lb": 0.77,
+    "inbound_shipping_fee": 0.05,
+    "landed_cost_per_unit": 29.2,
+    "profit_per_unit": 13.15,
+    "roi_percent": 45.03,
+    "margin_percent": 24.09,
+    "errors": []
+  },
+  "errors": [],
+  "manual_label": {
+    "my_decision": "BUY",
+    "gate_correct": true,
+    "my_reasoning": "All deterministic gates passed and the buy box has been relatively stable for the past few weeks.",
+    "gate_missed": null,
+    "expected_llm_override": "UPHOLD"
+  }
+}

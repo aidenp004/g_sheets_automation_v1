@@ -1,140 +1,181 @@
-# OA Control System (Internal Cybernetic Loop)
+# OA Control System
 
-Internal decision-control system for Amazon Online Arbitrage (OA).  
-One row per lead in Google Sheets. A Python evaluator reads the first row marked `EVALUATE=YES` with blank `Decision`, pulls market signals from Keepa API, applies deterministic gates (your criteria), and writes back `Decision`, `Recommended Qty`, `Downside Risk`, and `Reasons`.
+Deterministic Amazon OA evaluator using Google Sheets + Keepa, with SP-API fee-based profitability and an optional LLM review layer for specific edge-case gate outcomes.
 
-This project is intentionally **control-first**:
-- **State** lives in a Google Sheet (human-legible + auditable).
-- **Policy** is deterministic Python (no black-box authority).
-- **Humans** execute purchases.
-- **Feedback** is recorded in a separate `InventoryBatch` sheet and produces **proposals** (upgrade + calibration) that require CEO approval.
+## What Changed Recently
 
-## Current status (where this repo starts)
-- Google Sheets connection via Service Account is confirmed.
-- A test read returned `[['LeadID ']]` (header read), meaning auth + sheet access works.
-- Next step is to implement row selection (A: first row where `EVALUATE=YES` and `Decision` blank) and then Keepa integration + gates.
+- Added robust 21-day Buy Box range computation from Keepa history (`src/buy_box_range.py`) using percentile bands instead of min/max.
+- Added competitive seller logic from Keepa live offers with FBA/FBM split, seller dedupe, near-band competitiveness, and weighted stock pressure fields.
+- Added Keepa-only reverse-sourcing workflow based on Product Finder profiles (`seller_filter` mode) writing to `FinderQualified` / `FinderRejects`.
+- Added SP-API Product Fees integration (`src/sp_api_client.py`) so ROI % and Margin % are computed by the system (not VA-entered).
+- Added profitability helper module (`src/profitability.py`) using sell-price midpoint from `Buy Box Range (Current)` and inbound shipping from Keepa package weight.
+- Added eval-case export pipeline (`export_eval_case.py`) writing JSON cases to `/evals`.
+- Added two-stage LLM review pipeline (`src/llm_review.py`) with full run logging in `/llm_logs`.
 
-## What this system does (v1)
-Given a lead row, it will:
-1. Pull Keepa signals (price history, buy box history, offer count history, sales rank history as available).
-2. Apply gates based on your criteria:
-   - Hard blocks (mismatch, gated, IP not clean, etc.)
-   - Profitability + demand thresholds
-   - Amazon dominance constraint
-   - Offer spike rule (+10 sellers in 14 days unless sales rising similarly)
-   - Price stability rule (90-day low must be break-even or better)
-3. Compute downside risk (LOW/MED/HIGH).
-4. Output:
-   - `Decision` (REJECT / DEFER / TEST / BUY)
-   - `Recommended Qty`
-   - `Reasons`
-   - `Needs Human Review`
-   - `Decision Timestamp`
-   - `Policy Version`
+## Workflows
 
-## Definitions
-- **TEST** buy: small quantity (6–10 units) used when there is uncertainty or a red flag.
-  - Default: 8 units
-  - If downside risk HIGH: 6 units
-- **BUY** quantity: based on your logic:
-  - Use monthly sales and competitive sellers near buy box:
-    - `qty = ceil((EstSalesMonth / CompetitiveSellersNearBB) * 1.5)`
-  - 1.5 corresponds to buying ~45 days of stock (45/30).
+### 1) `sheet1` mode (primary lead evaluator)
 
-## Lead Sheet (minimum columns, v1)
-These are the agreed minimum columns (ordered; see SPEC.md for details):
+Command:
 
-Manual inputs:
-- LeadID
-- EVALUATE (YES/NO)
-- ASIN
-- Buy URL
-- Supplier Verified (YES/NO/REVIEW)
-- Exact Match Verified (YES/NO/REVIEW)
-- Gated (YES/NO/UNKNOWN)
-- IP Clean (YES/NO/UNKNOWN)
-- Landed Cost / Unit (all-in)
-- Buy Box Range (Current) (e.g., 29.99–34.99)
-- ROI %
-- Margin %
-- Apparel? (YES/NO)
-
-Auto-filled from Keepa:
-- Est Sales / Month
-- Competitive Sellers Near BB (Manual)  <-- manually entered count (near BB), v1
-- Offer Count Δ (14d)
-- Buy Box 90d Avg
-- Buy Box 90d Low
-- Amazon Buy Box % (90d)
-- Buy Box Stability (STABLE/UNSTABLE)
-
-Outputs:
-- Decision
-- Recommended Qty
-- Downside Risk (LOW/MED/HIGH)
-- Reasons
-- Needs Human Review (YES/NO)
-- Final Decision
-- Final Qty
-- BatchID
-- Decision Timestamp
-- Policy Version
-
-Optional transparency columns (recommended for spike-path auditability):
-- Spike Threshold
-- Spike Share %
-- Effective Spike Units / Mo
-- Spike ROI %
-- Spike Margin %
-- Spike Windows Count
-- Spike Path Qualified (YES/NO)
-
-Optional transparency columns for current buy box range (21d):
-- BuyBoxRange21d_Low
-- BuyBoxRange21d_High
-- BuyBoxSamples21d
-- BuyBoxRange21d_SpreadPct
-
-## InventoryBatch Sheet (minimal concept; built later)
-Separate tab, one row per ASIN purchase batch, used for feedback + upgrade/calibration proposals (CEO approval required).
-
-## Setup
-### 1) Python environment (Windows / PowerShell)
-Use `py` to ensure installs go into the same interpreter you're running:
-```powershell
-py -m pip install --upgrade pip
-py -m pip install gspread oauth2client requests pandas
-```
-
-### 2) Google Sheets API + Service Account
-1. Create Google Cloud project
-2. Enable Google Sheets API (and Drive API if needed)
-3. Create Service Account + JSON key
-4. Share your Google Sheet with the service account `client_email` as Editor
-
-### 3) Secrets & Credentials
-**⚠️ CRITICAL: Do not commit credentials to git.**
-
-1. **Google Service Account JSON**
-   - Download the JSON key from Google Cloud Console
-   - Save locally as `service_account.json` (already in `.gitignore`)
-   - Set env var: `GOOGLE_SERVICE_ACCOUNT_JSON=service_account.json`
-
-2. **Keepa API Key**
-   - Obtain from Keepa account settings
-   - Set env var: `KEEPA_API_KEY=your_key_here`
-
-3. **Copy `.env.example` to `.env`** and populate with your actual values:
-   ```powershell
-   cp .env.example .env
-   ```
-   - Edit `.env` with your real credentials (this file is in `.gitignore` and won't be committed)
-   - **Never** commit `.env` or `service_account.json`
-
-### 4) Run
 ```powershell
 py oa_control_flow.py
 ```
 
-## Roadmap
-See TASKS.md for milestones and next actions.
+Flow:
+
+- Finds first row where `EVALUATE=YES` and `Decision` is blank.
+- Pulls Keepa metrics for the ASIN.
+- Computes SP-API fee context and profitability fields:
+- `Estimated Sell Price (Mid BB)`, `Amazon Fees Total`, `Referral Fee`, `FBA Fulfillment Fee`
+- `Inbound Shipping Fee`, `Profit / Unit`, `ROI %`, `Margin %`
+- Runs deterministic policy decisioning in `src/policy.py` (`evaluate_lead`).
+- Passes decision through `llm_decision_pipeline(...)` for selective override/review.
+- Writes outputs back to the same row.
+- Writes `LLM Review Output` with the latest LLM1/LLM2 payload summary.
+- Exports a complete eval JSON to `/evals`.
+
+### 2) `seller_filter` mode (Product Finder reverse sourcing)
+
+Command:
+
+```powershell
+py oa_control_flow.py --mode seller_filter --seller_id <SELLER_ID> --profile default_us --limit 500
+```
+
+Flow:
+
+- Loads Product Finder profile from `config/finder_profiles.json`.
+- Injects `{{seller_id}}` into `selection_template`.
+- Pulls and dedupes ASIN candidates from Keepa Product Finder.
+- Applies cooldown across `FinderQualified` + `FinderRejects`.
+- Fetches detailed Keepa metrics and runs `evaluate_keepa_only(...)`.
+- Appends results to `FinderQualified` and `FinderRejects`.
+- Handles Keepa 429 by waiting and retrying the same ASIN (does not auto-reject 429).
+
+## LLM Review Layer
+
+All LLM logic lives in `src/llm_review.py`.
+
+Prompt files:
+
+- `prompts/llm1_system_prompt.txt`
+- `prompts/llm2_system_prompt.txt`
+
+Log output:
+
+- `llm_logs/llm_run_XXXX.json`
+
+### Models
+
+- LLM1 review analyst: `claude-sonnet-4-20250514`
+- LLM2 verifier/judge: `claude-haiku-4-5-20251001`
+
+### Runtime behavior
+
+- `oa_control_flow.py` calls:
+
+```python
+decision = llm_decision_pipeline(decision, keepa_metrics, row_data)
+```
+
+- Hard bypass returns deterministic decision unchanged for decisions already `BUY`/`TEST`, or reasons containing `IP Clean`, `ASIN is gated`, `Exact Match`, or `Est Sales / Month`.
+- Activation occurs only for `DEFER + needs_human_review=True`, or `REJECT` with reasons containing `Buy Box 90d Low` or `Offer Count Delta`.
+- LLM1 receives cleaned eval JSON (history entries with `keepa_minutes` removed).
+- LLM2 receives full raw eval JSON plus LLM1 output (with `keepa_minutes` included).
+- Final decision thresholds:
+- `overall_verified=True` and `confidence > 0.80`: use LLM decision, no human review flag.
+- `overall_verified=True` and `0.50 <= confidence <= 0.80`: use LLM decision, keep human review flag.
+- Otherwise: keep deterministic decision and force human review.
+- Any LLM failure falls back safely to deterministic decision with `needs_human_review=True`.
+
+## Product Finder Profile Config
+
+File:
+
+- `config/finder_profiles.json`
+
+Schema per profile:
+
+- `selection_template` (object sent as Keepa `selection`)
+- `max_pages` (int)
+- `candidate_limit` (int)
+- `detail_limit` (int)
+- `cooldown_days` (int)
+
+Placeholder:
+
+- `{{seller_id}}` is replaced with normalized seller ID.
+
+## Key Modules
+
+- `oa_control_flow.py`: main runner + mode dispatch + Sheet1 pipeline
+- `src/policy.py`: deterministic policy engine (`evaluate_lead`, `evaluate_keepa_only`)
+- `src/keepa_client.py`: Keepa metrics, range/seller/share extraction, Product Finder sourcing
+- `src/seller_filter_runner.py`: isolated seller_filter orchestration
+- `src/profitability.py`: midpoint parsing, inbound shipping, profit/ROI/margin math
+- `src/sp_api_client.py`: SP-API fees estimates with retry + in-run cache
+- `src/llm_review.py`: LLM review/verify/log orchestration
+- `export_eval_case.py`: JSON eval export utility
+
+## Environment Variables
+
+Core:
+
+- `SHEET_ID`
+- `WORKSHEET_NAME` (typically `Sheet1`)
+- `GOOGLE_SERVICE_ACCOUNT_JSON`
+- `KEEPA_API_KEY`
+- `KEEPA_DOMAIN_ID` (US = `1`)
+- `POLICY_VERSION`
+
+Seller filter:
+
+- `FINDER_PROFILES_PATH` (optional, defaults to `config/finder_profiles.json`)
+
+SP-API / profitability:
+
+- `SP_API_LWA_CLIENT_ID`
+- `SP_API_LWA_CLIENT_SECRET`
+- `SP_API_REFRESH_TOKEN`
+- `SP_API_MARKETPLACE_ID` (default `ATVPDKIKX0DER`)
+- `SP_API_ENDPOINT` (default `https://sellingpartnerapi-na.amazon.com`)
+- `INBOUND_SHIPPING_USD_PER_LB` (default `0.77`)
+
+LLM review:
+
+- `ANTHROPIC_API_KEY`
+
+## Install
+
+```powershell
+py -m pip install --upgrade pip
+py -m pip install gspread oauth2client requests pandas python-dotenv
+```
+
+## Eval Export Utility
+
+Command:
+
+```powershell
+py export_eval_case.py <ASIN> --landed-cost <OPTIONAL_COST>
+```
+
+Behavior:
+
+- Runs the ASIN through Keepa + policy (Keepa-only path in export utility).
+- Computes fee context with SP-API and profitability helpers when possible.
+- Writes `eval_XXXX_<ASIN>_<timestamp>.json` under `/evals`.
+
+## Troubleshooting
+
+- If LLM output fails, inspect latest `llm_logs/llm_run_XXXX.json` for explicit failure reason.
+- If `ANTHROPIC_API_KEY` is missing/invalid, pipeline falls back to deterministic decision and marks human review.
+- If Keepa fetch fails for a row, decision flow degrades safely and records Keepa error reason.
+- If SP-API fee estimate fails, row is marked for human review and BUY is blocked by deterministic gates.
+
+## Notes
+
+- Sheet column order changes are safe as long as header names remain unchanged.
+- `sheet1` and `seller_filter` are intentionally isolated workflows.
+- Do not commit real secrets in `.env` or `.env.example`.
