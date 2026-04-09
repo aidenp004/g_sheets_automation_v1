@@ -92,6 +92,8 @@ class SPAPIClient:
             json_body=payload,
         )
         fees = _parse_fees_estimate(response)
+        if len(self._fee_cache) >= 500:
+            self._fee_cache.clear()
         self._fee_cache[cache_key] = fees
         return fees
 

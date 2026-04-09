@@ -63,10 +63,11 @@ def _llm_review_with_error(eval_json: dict) -> tuple[dict | None, str | None]:
         if not api_key:
             return None, "ANTHROPIC_API_KEY missing"
 
+        llm1_model = os.getenv("ANTHROPIC_LLM1_MODEL", "claude-sonnet-4-20250514").strip() or "claude-sonnet-4-20250514"
         response, request_error = _post_anthropic_messages(
             api_key=api_key,
             payload={
-                "model": "claude-sonnet-4-20250514",
+                "model": llm1_model,
                 "max_tokens": 1000,
                 "system": LLM1_SYSTEM_PROMPT,
                 "messages": [
@@ -100,10 +101,11 @@ def _llm_verify_with_error(eval_json: dict, llm1_output: dict) -> tuple[dict | N
         if not api_key:
             return None, "ANTHROPIC_API_KEY missing"
 
+        llm2_model = os.getenv("ANTHROPIC_LLM2_MODEL", "claude-haiku-4-5-20251001").strip() or "claude-haiku-4-5-20251001"
         response, request_error = _post_anthropic_messages(
             api_key=api_key,
             payload={
-                "model": "claude-haiku-4-5-20251001",
+                "model": llm2_model,
                 "max_tokens": 1000,
                 "system": LLM2_SYSTEM_PROMPT,
                 "messages": [
@@ -241,7 +243,7 @@ def llm_decision_pipeline(
     llm2_output = llm2_result
 
     overall_verified, confidence = _extract_verify_fields(llm2_output)
-    if overall_verified and confidence > 0.80:
+    if overall_verified and confidence >= 0.80:
         llm_policy = _build_llm_policy_decision(
             baseline=decision,
             llm1_output=llm1_output,
@@ -254,7 +256,7 @@ def llm_decision_pipeline(
             final_decision=llm_policy,
         )
 
-    if overall_verified and 0.50 <= confidence <= 0.80:
+    if overall_verified and 0.50 <= confidence < 0.80:
         llm_policy = _build_llm_policy_decision(
             baseline=decision,
             llm1_output=llm1_output,
@@ -502,6 +504,8 @@ def _contains_phrase(text: str, phrase: str) -> bool:
 
 
 def _extract_verify_fields(llm2_output: dict) -> tuple[bool, float]:
+    import sys
+
     overall_verified_raw = llm2_output.get("overall_verified")
     if isinstance(overall_verified_raw, bool):
         overall_verified = overall_verified_raw
@@ -512,6 +516,11 @@ def _extract_verify_fields(llm2_output: dict) -> tuple[bool, float]:
     try:
         confidence = float(confidence_raw)
     except (TypeError, ValueError):
+        print(
+            f"[WARN] llm_review: LLM2 confidence field could not be parsed "
+            f"(value={confidence_raw!r}); defaulting to 0.0 and deferring to human review.",
+            file=sys.stderr,
+        )
         confidence = 0.0
     confidence = max(0.0, min(1.0, confidence))
     return overall_verified, confidence

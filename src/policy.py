@@ -678,6 +678,11 @@ def _estimate_buy_qty_for_new_fba_entrant(
     )
     confidence = max(0.30, min(0.90, base_confidence * stock_modifier))
     entrant_units_est = (addressable_fba_units / effective_competitors) * confidence
+    if entrant_units_est < 0.5:
+        return None, (
+            f"Entrant unit estimate too low ({entrant_units_est:.2f}/mo) to justify purchase; "
+            "market may be over-competed or demand too thin"
+        )
     recommended_qty = min(BUY_QTY_CAP, max(1, int(math.ceil(entrant_units_est))))
 
     summary = (

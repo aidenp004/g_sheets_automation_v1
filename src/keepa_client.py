@@ -65,7 +65,14 @@ class KeepaClient:
         brand = _clean_string(product.get("brand"))
         stats = product.get("stats") if isinstance(product.get("stats"), dict) else {}
         now_keepa_minutes = _now_keepa_minutes()
-        buy_box_price_history = self._extract_buy_box_price_history(product, window_days=90)
+        min_interval_ts = _extract_min_interval_timestamp(
+            stats.get("minInInterval"), CSV_BUY_BOX_SHIPPING
+        )
+        buy_box_price_history = self._extract_buy_box_price_history(
+            product,
+            window_days=90,
+            min_timestamp=min_interval_ts,
+        )
         buy_box_price_history_raw = self._extract_buy_box_price_history_raw(
             product,
             window_days=HISTORY_QUERY_DAYS,
@@ -626,7 +633,9 @@ class KeepaClient:
 
     @staticmethod
     def _extract_buy_box_price_history(
-        product: dict[str, Any], window_days: int = 90
+        product: dict[str, Any],
+        window_days: int = 90,
+        min_timestamp: int | None = None,
     ) -> list[tuple[int, float]]:
         series = _extract_csv_series(product, CSV_BUY_BOX_SHIPPING)
         points = _parse_keepa_price_with_shipping_series(series) if series else []
@@ -634,6 +643,8 @@ class KeepaClient:
             return []
 
         cutoff = _now_keepa_minutes() - (window_days * 24 * 60)
+        if min_timestamp is not None:
+            cutoff = min(cutoff, int(min_timestamp))
         filtered: list[tuple[int, float]] = []
         for ts, value_cents in points:
             if ts < cutoff or value_cents < 0:
@@ -1040,6 +1051,18 @@ def _extract_min_interval_value(raw: Any, index: int) -> float | None:
     if value is None or value < 0:
         return None
     return value
+
+
+def _extract_min_interval_timestamp(raw: Any, index: int) -> int | None:
+    if not isinstance(raw, list) or index >= len(raw):
+        return None
+    entry = raw[index]
+    if not isinstance(entry, list) or not entry:
+        return None
+    ts = _coerce_int(entry[0])
+    if ts is None or ts < 0:
+        return None
+    return ts
 
 
 def _cents_to_dollars(value: float | None) -> float | None:
