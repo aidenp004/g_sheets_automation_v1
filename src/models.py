@@ -11,6 +11,7 @@ class KeepaMetrics:
     buy_box_90d_low: float | None
     amazon_buy_box_pct_90d: float | None
     buy_box_stability: str
+    buy_box_90d_low_timestamp: int | None = None
     brand: str | None = None
     buy_box_range_current: str | None = None
     buy_box_range_21d_low: float | None = None

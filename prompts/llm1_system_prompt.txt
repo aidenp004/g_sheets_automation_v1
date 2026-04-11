@@ -31,6 +31,9 @@ If there are only 1-3 competitive FBA sellers near the buy box and their stock l
 Rule 6 — Price stability during offer count increases is a buy signal.
 If seller count has risen but the buy box price has not dropped, the market is absorbing the new supply. This is a TEST at minimum, not a reject. Flag it for close monitoring but do not treat a stable-price offer spike the same as a price-eroding one.
 
+Rule 7 — The 90d low from key_metrics may not appear in the raw price history.
+The buy_box_90d_low value in key_metrics is computed by Keepa server-side from their internal dataset and may reflect a price event that occurred before the raw history window begins. If buy_box_90d_low does not appear anywhere in buy_box_price_history, this is expected and not a data error. Do not attempt to find or cite a timestamp for it from the history array. Do not hallucinate a timestamp. Instead do the following: explicitly acknowledge in your cited_evidence that the 90d low occurred outside the visible history window, then reason about whether it is still a concern based on what the history does show. If the price history shows stable pricing well above the break-even floor throughout the entire visible window, that is strong evidence the anomaly has resolved and the gate concern should be DISCOUNTED.
+
 ---
 
 OUTPUT FORMAT

@@ -115,7 +115,7 @@ class KeepaClient:
 
         est_sales_month = self._extract_est_sales_month(product, stats)
         offer_count_delta_14d = self._extract_offer_count_delta_14d(product)
-        buy_box_90d_avg, buy_box_90d_low = self._extract_buy_box_90d_metrics(product, stats)
+        buy_box_90d_avg, buy_box_90d_low, buy_box_90d_low_timestamp = self._extract_buy_box_90d_metrics(product, stats)
         amazon_buy_box_pct_90d = self._extract_amazon_buy_box_pct_90d(
             product=product,
             stats=stats,
@@ -147,6 +147,7 @@ class KeepaClient:
             offer_count_delta_14d=offer_count_delta_14d,
             buy_box_90d_avg=buy_box_90d_avg,
             buy_box_90d_low=buy_box_90d_low,
+            buy_box_90d_low_timestamp=buy_box_90d_low_timestamp,
             amazon_buy_box_pct_90d=amazon_buy_box_pct_90d,
             buy_box_stability=buy_box_stability,
             brand=brand,
@@ -421,9 +422,14 @@ class KeepaClient:
 
     def _extract_buy_box_90d_metrics(
         self, product: dict[str, Any], stats: dict[str, Any]
-    ) -> tuple[float | None, float | None]:
+    ) -> tuple[float | None, float | None, int | None]:
         avg_90_cents = _extract_stats_array_value(stats.get("avg90"), CSV_BUY_BOX_SHIPPING)
         low_90_cents = _extract_min_interval_value(stats.get("minInInterval"), CSV_BUY_BOX_SHIPPING)
+
+        low_ts_unix: int | None = None
+        low_ts_keepa = _extract_min_interval_timestamp(stats.get("minInInterval"), CSV_BUY_BOX_SHIPPING)
+        if low_ts_keepa is not None:
+            low_ts_unix = (low_ts_keepa + KEEPA_EPOCH_OFFSET_MINUTES) * 60
 
         # Fallback to raw history if stats arrays are not populated.
         if avg_90_cents is None or low_90_cents is None:
@@ -432,16 +438,20 @@ class KeepaClient:
             points = [pair for pair in points if pair[1] >= 0]
             if points:
                 cutoff = _now_keepa_minutes() - (90 * 24 * 60)
-                in_window = [value for ts, value in points if ts >= cutoff]
-                if not in_window:
-                    in_window = [value for _, value in points]
-                if in_window:
+                in_window_pairs = [(ts, value) for ts, value in points if ts >= cutoff]
+                if not in_window_pairs:
+                    in_window_pairs = list(points)
+                if in_window_pairs:
+                    in_window_values = [value for _, value in in_window_pairs]
                     if avg_90_cents is None:
-                        avg_90_cents = sum(in_window) / len(in_window)
+                        avg_90_cents = sum(in_window_values) / len(in_window_values)
                     if low_90_cents is None:
-                        low_90_cents = min(in_window)
+                        low_90_cents = min(in_window_values)
+                        if low_ts_unix is None:
+                            min_pair = min(in_window_pairs, key=lambda pair: pair[1])
+                            low_ts_unix = (min_pair[0] + KEEPA_EPOCH_OFFSET_MINUTES) * 60
 
-        return _cents_to_dollars(avg_90_cents), _cents_to_dollars(low_90_cents)
+        return _cents_to_dollars(avg_90_cents), _cents_to_dollars(low_90_cents), low_ts_unix
 
     def _extract_amazon_buy_box_pct_90d(
         self,

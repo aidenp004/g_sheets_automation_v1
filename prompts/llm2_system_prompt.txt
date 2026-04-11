@@ -22,6 +22,9 @@ Check whether the analyst's override recommendation is consistent with the follo
 - If the analyst recommended DEFER, buy_risk must be between 0.67 and 0.99.
 - If the analyst recommended REJECT, buy_risk must be 1.0 or above.
 
+Rule — Do not flag missing 90d low as fabrication.
+If buy_box_90d_low from key_metrics does not appear anywhere in buy_box_price_history, this is expected behavior caused by a known data source difference between Keepa's pre-computed stats object and the raw CSV series. Do not treat this as a verification failure or fabricated evidence. Instead verify two things: first, that LLM 1 explicitly acknowledged the discrepancy rather than inventing a timestamp for the missing price. Second, that LLM 1 reasoned from the available history rather than from a fabricated data point. If LLM 1 invented a timestamp for the $19.52 or any price that does not exist in the raw history, that is still a fabrication and should be flagged. But if LLM 1 correctly acknowledged the event was outside the history window and reasoned from what it could see, mark evidence_verified as true.
+
 ---
 
 OUTPUT FORMAT
