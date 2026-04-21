@@ -47,10 +47,6 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
     roi = _parse_number(row_data.get("ROI %"))
     margin = _parse_number(row_data.get("Margin %"))
     profitability_calc_error = (row_data.get("Profitability Calc Error") or "").strip()
-    competitors_near_bb = _parse_number(
-        row_data.get("Competitive Sellers Near BB")
-        or row_data.get("Competitive Sellers Near BB (Manual)")
-    )
 
     min_roi = 30.0 if apparel else 20.0
     min_margin = 15.0 if apparel else 12.0
@@ -214,37 +210,17 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
         )
 
     if downside_risk == "LOW":
-        if keepa.est_sales_month is None:
+        buy_qty, qty_summary, qty_audit = compute_recommended_qty("BUY", keepa, row_data, downside_risk)
+        if buy_qty == 0:
             return PolicyDecision(
                 decision="DEFER",
                 recommended_qty=0,
                 downside_risk="MED",
                 needs_human_review=True,
-                reasons=["Cannot compute BUY qty: Est Sales / Month missing."],
+                reasons=[qty_summary],
                 audit_fields=spike_eval["audit_fields"],
             )
-        qty_estimate, qty_issue = _estimate_buy_qty_for_new_fba_entrant(
-            keepa=keepa,
-            fallback_competitors=competitors_near_bb,
-        )
-        if qty_estimate is None or qty_issue is not None:
-            return PolicyDecision(
-                decision="DEFER",
-                recommended_qty=0,
-                downside_risk="MED",
-                needs_human_review=True,
-                reasons=[f"Cannot compute BUY qty: {qty_issue or 'quantity model unavailable'}."],
-                audit_fields=_merge_audit_fields(
-                    spike_eval["audit_fields"],
-                    (qty_estimate or {}).get("audit_fields", {}),
-                ),
-            )
-        buy_qty = int(qty_estimate["recommended_qty"])
-        qty_summary = str(qty_estimate["summary"])
-        combined_audit = _merge_audit_fields(
-            spike_eval["audit_fields"],
-            qty_estimate["audit_fields"],
-        )
+        combined_audit = _merge_audit_fields(spike_eval["audit_fields"], qty_audit)
         return PolicyDecision(
             decision="BUY",
             recommended_qty=buy_qty,
@@ -254,7 +230,7 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
             audit_fields=combined_audit,
         )
 
-    test_qty = TEST_QTY_HIGH_RISK if downside_risk == "HIGH" else TEST_QTY_DEFAULT
+    test_qty, _, _ = compute_recommended_qty("TEST", keepa, row_data, downside_risk)
     return PolicyDecision(
         decision="TEST",
         recommended_qty=test_qty,
@@ -263,6 +239,54 @@ def evaluate_lead(row_data: dict[str, str], keepa: KeepaMetrics) -> PolicyDecisi
         reasons=_dedupe_reasons(reasons) or ["Risk not low; assigned TEST quantity."],
         audit_fields=spike_eval["audit_fields"],
     )
+
+
+def compute_recommended_qty(
+    decision: str,
+    keepa: KeepaMetrics,
+    row_data: dict,
+    downside_risk: str,
+) -> tuple[int, str, dict[str, str]]:
+    """
+    Compute recommended purchase quantity, a reasons-field summary, and qty-model
+    audit fields for the given decision outcome.
+
+    Returns:
+        (qty, summary, audit_fields)
+        - qty is 0 for DEFER/REJECT or when the BUY qty model cannot produce an estimate.
+        - summary is non-empty only when qty > 0 or when BUY model fails (error message).
+        - audit_fields is non-empty only for a successful BUY calculation.
+
+    The audit_fields element is used internally by evaluate_lead() to build
+    combined_audit; callers that only need qty + summary may ignore it with ``_``.
+    """
+    if decision == "BUY":
+        competitors_near_bb = _parse_number(
+            row_data.get("Competitive Sellers Near BB")
+            or row_data.get("Competitive Sellers Near BB (Manual)")
+        )
+        qty_estimate, qty_issue = _estimate_buy_qty_for_new_fba_entrant(
+            keepa=keepa,
+            fallback_competitors=competitors_near_bb,
+        )
+        if qty_estimate is None or qty_issue is not None:
+            return (
+                0,
+                f"Cannot compute BUY qty: {qty_issue or 'quantity model unavailable'}.",
+                {},
+            )
+        return (
+            int(qty_estimate["recommended_qty"]),
+            str(qty_estimate["summary"]),
+            dict(qty_estimate["audit_fields"]),
+        )
+
+    if decision == "TEST":
+        if downside_risk == "HIGH":
+            return TEST_QTY_HIGH_RISK, f"TEST quantity {TEST_QTY_HIGH_RISK} (high downside risk).", {}
+        return TEST_QTY_DEFAULT, f"TEST quantity {TEST_QTY_DEFAULT} (standard risk).", {}
+
+    return 0, "", {}
 
 
 def evaluate_keepa_only(keepa: KeepaMetrics) -> FilterResult:

@@ -405,7 +405,13 @@ def _run_sheet1(config: dict[str, str]) -> int:
         row_data["Profitability Calc Error"] = ""
 
     decision = evaluate_lead(row_data=row_data, keepa=keepa_metrics)
-    decision = llm_decision_pipeline(decision, keepa_metrics, row_data)
+    _fee_context = {
+        "amazon_fees_total": amazon_fees_total,
+        "estimated_sell_price": estimated_sell_price,
+        "landed_cost_per_unit": landed_cost,
+        "inbound_shipping_fee": inbound_shipping_fee,
+    }
+    decision = llm_decision_pipeline(decision, keepa_metrics, row_data, _fee_context)
 
     updates: dict[str, str] = {
         "Est Sales / Month": _fmt_int(keepa_metrics.est_sales_month),

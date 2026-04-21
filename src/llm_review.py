@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import copy
-from dataclasses import asdict, is_dataclass
+import base64
 from datetime import datetime, timezone
 import json
 import os
 import re
+import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -15,11 +16,14 @@ import requests
 from src.keepa_client import KEEPA_EPOCH_OFFSET_MINUTES
 from src.models import KeepaMetrics
 from src.models import PolicyDecision
+from src.policy import _estimate_break_even_floor, compute_recommended_qty
 
 _PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
-LLM_REVIEW_OUTPUT_AUDIT_FIELD = "LLM Review Output"
-LLM_REVIEW_OUTPUT_MAX_CHARS = 45000
 ANTHROPIC_REQUEST_TIMEOUT_SECONDS = 90.0
+
+# Regex patterns used by validate_citations
+_CITATION_FLOAT_RE = re.compile(r"\$?(\d{1,8}(?:\.\d{1,4})?)")
+_CITATION_ISO_TS_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z")
 ANTHROPIC_REQUEST_MAX_RETRIES = 3
 ANTHROPIC_RETRYABLE_STATUS_CODES = {408, 409, 425, 429, 500, 502, 503, 504}
 
@@ -36,86 +40,532 @@ LLM1_SYSTEM_PROMPT = _load_system_prompt("llm1_system_prompt.txt")
 LLM2_SYSTEM_PROMPT = _load_system_prompt("llm2_system_prompt.txt")
 
 
-def llm_review(eval_json: dict) -> dict | None:
-    result, _ = _llm_review_with_error(eval_json)
-    return result
+def build_verified_facts(
+    keepa: KeepaMetrics,
+    row_data: dict,
+    gate_reasons: list[str],
+    break_even_floor: float | None,
+    amazon_fees_total: float | None = None,
+) -> dict:
+    """
+    Compute a single verified-facts object from pipeline data. Pure Python —
+    no LLM calls, no external I/O, no randomness. Every float rounded to 2dp.
+    Returns a minimal safe dict on any failure.
 
-
-def _llm_review_with_error(eval_json: dict) -> tuple[dict | None, str | None]:
+    amazon_fees_total: pass the float directly from fee_context rather than
+    relying on row_data["Amazon Fees Total"], which is not populated at the
+    point llm_decision_pipeline is called.
+    """
     try:
-        cleaned_eval_json = copy.deepcopy(eval_json)
+        history = keepa.buy_box_price_history  # list[tuple[int, float]] — (keepa_minutes, price_usd)
 
-        raw_history = cleaned_eval_json.get("raw_history")
-        if isinstance(raw_history, dict):
-            buy_box_price_history = raw_history.get("buy_box_price_history")
-            if isinstance(buy_box_price_history, list):
-                for entry in buy_box_price_history:
-                    if isinstance(entry, dict):
-                        entry.pop("keepa_minutes", None)
+        # ── Section 1: BB 90d stats ────────────────────────────────────────────
+        low_price = keepa.buy_box_90d_low
+        low_present = False
+        if low_price is not None and history:
+            low_present = any(abs(price_usd - low_price) <= 0.02 for _, price_usd in history)
 
-            buy_box_seller_history = raw_history.get("buy_box_seller_history")
-            if isinstance(buy_box_seller_history, list):
-                for entry in buy_box_seller_history:
-                    if isinstance(entry, dict):
-                        entry.pop("keepa_minutes", None)
+        bb_90d: dict[str, Any] = {
+            "low": round(low_price, 2) if low_price is not None else None,
+            "low_timestamp_unix": keepa.buy_box_90d_low_timestamp,
+            "low_present_in_history": low_present,
+            "avg": round(keepa.buy_box_90d_avg, 2) if keepa.buy_box_90d_avg is not None else None,
+            "amazon_pct": round(keepa.amazon_buy_box_pct_90d, 2) if keepa.amazon_buy_box_pct_90d is not None else None,
+            "fba_share_pct": round(keepa.buy_box_fba_share_90d, 2) if keepa.buy_box_fba_share_90d is not None else None,
+            "stability": keepa.buy_box_stability,
+        }
 
+        # ── Section 2: History summary ─────────────────────────────────────────
+        if history:
+            prices = [p for _, p in history]
+            hist_avg = round(sum(prices) / len(prices), 2)
+
+            days_below = 0
+            if break_even_floor is not None:
+                below_dates: set[str] = set()
+                for km, p in history:
+                    if p < break_even_floor:
+                        unix_ts = (km + KEEPA_EPOCH_OFFSET_MINUTES) * 60
+                        below_dates.add(
+                            datetime.fromtimestamp(unix_ts, tz=timezone.utc).strftime("%Y-%m-%d")
+                        )
+                days_below = len(below_dates)
+
+            history_30d: dict[str, Any] = {
+                "window_start": _keepa_minutes_to_iso(history[0][0]),
+                "window_end": _keepa_minutes_to_iso(history[-1][0]),
+                "entry_count": len(history),
+                "low": round(min(prices), 2),
+                "high": round(max(prices), 2),
+                "avg": hist_avg,
+                "days_below_breakeven": days_below,
+            }
+        else:
+            hist_avg = None
+            history_30d = {
+                "window_start": None,
+                "window_end": None,
+                "entry_count": 0,
+                "low": None,
+                "high": None,
+                "avg": None,
+                "days_below_breakeven": 0,
+            }
+
+        # ── Section 3: Price events ────────────────────────────────────────────
+        events: list[dict[str, Any]] = []
+        event_counter = [0]  # list avoids nonlocal
+
+        def _next_id() -> str:
+            event_counter[0] += 1
+            return f"evt_{event_counter[0]:03d}"
+
+        def _neighbors(idx: int) -> tuple[dict | None, dict | None]:
+            prior = None
+            nxt = None
+            if idx > 0:
+                km, p = history[idx - 1]
+                prior = {"timestamp": _keepa_minutes_to_iso(km), "price": round(p, 2)}
+            if idx < len(history) - 1:
+                km, p = history[idx + 1]
+                nxt = {"timestamp": _keepa_minutes_to_iso(km), "price": round(p, 2)}
+            return prior, nxt
+
+        def _recovery_min(idx: int) -> int | None:
+            if idx >= len(history) - 1:
+                return None
+            return history[idx + 1][0] - history[idx][0]
+
+        def _make_event(event_type: str, idx: int) -> dict[str, Any]:
+            km, p = history[idx]
+            prior, nxt = _neighbors(idx)
+            return {
+                "event_id": _next_id(),
+                "type": event_type,
+                "timestamp": _keepa_minutes_to_iso(km),
+                "price": round(p, 2),
+                "prior": prior,
+                "next": nxt,
+                "recovery_minutes": _recovery_min(idx),
+            }
+
+        abs_min_idx: int | None = None
+        if history:
+            abs_min_idx = min(range(len(history)), key=lambda i: history[i][1])
+            events.append(_make_event("absolute_minimum", abs_min_idx))
+
+        # Local minima — cap at 5 most significant by depth below history avg
+        if len(history) >= 3:
+            avg_val = hist_avg if hist_avg is not None else 0.0
+            local_min_candidates: list[tuple[float, int]] = []
+            for i in range(1, len(history) - 1):
+                if i == abs_min_idx:
+                    continue
+                _, prev_p = history[i - 1]
+                _, curr_p = history[i]
+                _, next_p = history[i + 1]
+                if curr_p < prev_p and curr_p < next_p:
+                    local_min_candidates.append((avg_val - curr_p, i))
+            local_min_candidates.sort(key=lambda x: x[0], reverse=True)
+            for _, i in local_min_candidates[:5]:
+                events.append(_make_event("local_minimum", i))
+
+        # Sharp recoveries — consecutive pairs where next > prior + $2.00, cap 3 by magnitude
+        if len(history) >= 2:
+            recovery_candidates: list[tuple[float, int]] = []
+            for i in range(len(history) - 1):
+                _, p_i = history[i]
+                _, p_next = history[i + 1]
+                gain = p_next - p_i
+                if gain > 2.00:
+                    recovery_candidates.append((gain, i))
+            recovery_candidates.sort(key=lambda x: x[0], reverse=True)
+            for _, i in recovery_candidates[:3]:
+                events.append(_make_event("sharp_recovery", i))
+
+        # ── Section 4: Competition ─────────────────────────────────────────────
+        competition: dict[str, Any] = {
+            "fba_sellers_near_bb": keepa.competitive_fba_sellers_near_bb,
+            "fbm_sellers_near_bb": keepa.competitive_fbm_sellers_near_bb,
+            "total_near_bb": keepa.competitive_sellers_near_bb,
+            "weighted_stock": (
+                round(keepa.competitive_weighted_stock_units, 2)
+                if keepa.competitive_weighted_stock_units is not None
+                else None
+            ),
+            "offer_count_delta_14d": keepa.offer_count_delta_14d,
+            "est_sales_month": keepa.est_sales_month,
+        }
+
+        # ── Section 5: Profitability ───────────────────────────────────────────
+        landed_cost = (
+            _parse_number(row_data.get("Landed Cost / Unit (all-in)"))
+            or _parse_number(row_data.get("Landed Cost / Unit"))
+        )
+        if amazon_fees_total is None:
+            amazon_fees_total = _parse_number(row_data.get("Amazon Fees Total"))
+        roi_pct = _parse_number(row_data.get("ROI %"))
+        margin_pct = _parse_number(row_data.get("Margin %"))
+
+        def _roi(sell_price: float | None) -> float | None:
+            if sell_price is None or amazon_fees_total is None or not landed_cost:
+                return None
+            return round((sell_price - amazon_fees_total - landed_cost) / landed_cost * 100, 2)
+
+        history_low = history_30d.get("low")
+        roi_at_bb_90d_low = _roi(low_price) if low_present else None
+
+        profitability: dict[str, Any] = {
+            "current_bb_price": (
+                round(keepa.current_buy_box_price, 2)
+                if keepa.current_buy_box_price is not None
+                else None
+            ),
+            "landed_cost": round(landed_cost, 2) if landed_cost is not None else None,
+            "roi_percent": round(roi_pct, 2) if roi_pct is not None else None,
+            "margin_percent": round(margin_pct, 2) if margin_pct is not None else None,
+            "breakeven_floor": round(break_even_floor, 2) if break_even_floor is not None else None,
+            "roi_at_history_30d_low": _roi(history_low),
+            "roi_at_bb_90d_low": roi_at_bb_90d_low,
+        }
+
+        return {
+            "bb_90d": bb_90d,
+            "history_30d": history_30d,
+            "price_events": events,
+            "competition": competition,
+            "profitability": profitability,
+        }
+
+    except Exception as exc:
+        return {
+            "bb_90d": {},
+            "history_30d": {},
+            "price_events": [],
+            "competition": {},
+            "profitability": {},
+            "_error": f"{type(exc).__name__}: {exc}",
+        }
+
+
+def fetch_graph_image(asin: str, keepa_api_key: str) -> str | None:
+    """
+    Download a 365-day Keepa chart for *asin* and return it as a base64 string
+    suitable for an Anthropic vision content block. Returns None on any failure;
+    the pipeline degrades gracefully without the image.
+    """
+    try:
+        from keepa import Keepa  # deferred: optional dependency
+    except ImportError:
+        print("[WARN] fetch_graph_image: keepa package not installed; skipping graph image.", file=sys.stderr)
+        return None
+
+    tmp_path: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+            tmp_path = tmp.name
+
+        api = Keepa(keepa_api_key)
+        api.download_graph_image(
+            asin=asin,
+            filename=tmp_path,
+            domain="US",
+            bb=1,
+            new=1,
+            range=365,
+            width=1200,
+            height=500,
+        )
+        with open(tmp_path, "rb") as f:
+            return base64.standard_b64encode(f.read()).decode("utf-8")
+    except Exception as exc:
+        print(f"[WARN] fetch_graph_image: failed for ASIN {asin!r}: {type(exc).__name__}: {exc}", file=sys.stderr)
+        return None
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+
+
+def validate_citations(llm1_output: dict, verified_facts: dict) -> dict:
+    """
+    Pure-Python deterministic check: every cited_facts entry in llm1_output must
+    exist in verified_facts, and any values mentioned in cited_evidence must match
+    within tolerance. Never raises.
+    """
+    _malformed: dict[str, Any] = {
+        "all_valid": False,
+        "checked": [],
+        "failures": [{"reason": "llm1_output_malformed"}],
+    }
+
+    try:
+        assessments = llm1_output.get("gate_assessments")
+        if not isinstance(assessments, list):
+            return _malformed
+    except Exception:
+        return _malformed
+
+    checked: list[dict[str, Any]] = []
+    failures: list[dict[str, Any]] = []
+
+    try:
+        for assessment in assessments:
+            if not isinstance(assessment, dict):
+                continue
+
+            cited_facts_raw = assessment.get("cited_facts", [])
+            cited_evidence = str(assessment.get("cited_evidence") or "")
+
+            if not isinstance(cited_facts_raw, list):
+                continue
+
+            for raw_citation in cited_facts_raw:
+                citation = str(raw_citation).strip()
+
+                if citation.startswith("verified_facts."):
+                    result = _check_field_citation(citation, cited_evidence, verified_facts)
+                elif citation.startswith("evt_"):
+                    result = _check_event_citation(citation, cited_evidence, verified_facts)
+                else:
+                    result = {
+                        "citation": citation,
+                        "exists": False,
+                        "value_matches": False,
+                        "resolved_value": None,
+                        "valid": False,
+                    }
+
+                checked.append(result)
+
+                if not result["valid"]:
+                    if not result["exists"]:
+                        if not (citation.startswith("verified_facts.") or citation.startswith("evt_")):
+                            reason = "unrecognised citation format"
+                        else:
+                            reason = "path not found in verified_facts"
+                    else:
+                        reason = "value in cited_evidence does not match resolved value"
+                    failures.append({"citation": citation, "reason": reason})
+
+    except Exception as exc:
+        return {
+            "all_valid": False,
+            "checked": checked,
+            "failures": failures + [{"reason": f"parse error: {type(exc).__name__}: {exc}"}],
+        }
+
+    all_valid = all(r["valid"] for r in checked) if checked else True
+    return {
+        "all_valid": all_valid,
+        "checked": checked,
+        "failures": failures,
+    }
+
+
+def _check_field_citation(
+    citation: str, cited_evidence: str, verified_facts: dict
+) -> dict[str, Any]:
+    """Navigate a verified_facts.<path> citation and check numeric values in cited_evidence."""
+    path_str = citation[len("verified_facts."):]
+    parts = [p for p in path_str.split(".") if p]
+
+    node: Any = verified_facts
+    for part in parts:
+        if not isinstance(node, dict) or part not in node:
+            return {
+                "citation": citation,
+                "exists": False,
+                "value_matches": False,
+                "resolved_value": None,
+                "valid": False,
+            }
+        node = node[part]
+
+    value_matches = _numeric_appears_in_evidence(node, cited_evidence)
+    return {
+        "citation": citation,
+        "exists": True,
+        "value_matches": value_matches,
+        "resolved_value": node,
+        "valid": value_matches,
+    }
+
+
+def _check_event_citation(
+    citation: str, cited_evidence: str, verified_facts: dict
+) -> dict[str, Any]:
+    """Find an evt_XXX in price_events and verify price/timestamp values in cited_evidence."""
+    events = verified_facts.get("price_events")
+    if not isinstance(events, list):
+        return {
+            "citation": citation,
+            "exists": False,
+            "value_matches": False,
+            "resolved_value": None,
+            "valid": False,
+        }
+
+    event = next(
+        (e for e in events if isinstance(e, dict) and e.get("event_id") == citation),
+        None,
+    )
+    if event is None:
+        return {
+            "citation": citation,
+            "exists": False,
+            "value_matches": False,
+            "resolved_value": None,
+            "valid": False,
+        }
+
+    price_ok = _numeric_appears_in_evidence(event.get("price"), cited_evidence)
+    ts_ok = _timestamp_appears_in_evidence(event.get("timestamp"), cited_evidence)
+    value_matches = price_ok and ts_ok
+
+    return {
+        "citation": citation,
+        "exists": True,
+        "value_matches": value_matches,
+        "resolved_value": {"price": event.get("price"), "timestamp": event.get("timestamp")},
+        "valid": value_matches,
+    }
+
+
+def _numeric_appears_in_evidence(resolved_value: Any, cited_evidence: str) -> bool:
+    """
+    If resolved_value is numeric, at least one float extracted from cited_evidence
+    must be within $0.02. If resolved_value is not numeric, or no floats appear in
+    cited_evidence, return True (no numeric claim to refute).
+    """
+    if resolved_value is None:
+        return True
+    if isinstance(resolved_value, bool):
+        # bool is a subclass of int; float(False)==0.0 would produce spurious failures
+        return True
+    try:
+        target = float(resolved_value)
+    except (TypeError, ValueError):
+        return True  # non-numeric field — nothing to check
+
+    extracted = [float(m) for m in _CITATION_FLOAT_RE.findall(cited_evidence)]
+    if not extracted:
+        return True  # analyst made no numeric claim — not a failure
+    return any(abs(v - target) <= 0.02 for v in extracted)
+
+
+def _timestamp_appears_in_evidence(timestamp: Any, cited_evidence: str) -> bool:
+    """
+    If timestamp is an ISO string, check it appears verbatim in cited_evidence.
+    If no ISO timestamps appear in cited_evidence, return True (no claim made).
+    """
+    if not isinstance(timestamp, str):
+        return True
+    found = _CITATION_ISO_TS_RE.findall(cited_evidence)
+    if not found:
+        return True  # analyst made no timestamp claim — not a failure
+    return timestamp in found
+
+
+def llm_review(
+    verified_facts: dict,
+    graph_image_base64: str | None,
+    gate_reasons: list[str],
+) -> dict | None:
+    """
+    Call LLM1 (analyst) with verified_facts, an optional graph image, and the
+    gate reasons that triggered review. Returns the parsed JSON response or None.
+    """
+    try:
         api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
         if not api_key:
-            return None, "ANTHROPIC_API_KEY missing"
+            return None
 
-        llm1_model = os.getenv("ANTHROPIC_LLM1_MODEL", "claude-sonnet-4-20250514").strip() or "claude-sonnet-4-20250514"
-        response, request_error = _post_anthropic_messages(
+        content: list[dict[str, Any]] = []
+
+        content.append({
+            "type": "text",
+            "text": (
+                f"Gate reasons that triggered this review:\n{json.dumps(gate_reasons, indent=2)}"
+                f"\n\nVerified facts:\n{json.dumps(verified_facts, indent=2)}"
+            ),
+        })
+
+        if graph_image_base64:
+            content.append({
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": "image/png",
+                    "data": graph_image_base64,
+                },
+            })
+
+        content.append({
+            "type": "text",
+            "text": (
+                "Based on the verified facts and graph image above, assess each gate reason "
+                "and provide your decision in the required JSON format."
+            ),
+        })
+
+        llm1_model = (
+            os.getenv("ANTHROPIC_LLM1_MODEL", "claude-sonnet-4-20250514").strip()
+            or "claude-sonnet-4-20250514"
+        )
+        response, _ = _post_anthropic_messages(
             api_key=api_key,
             payload={
                 "model": llm1_model,
                 "max_tokens": 1000,
+                "temperature": 0,
                 "system": LLM1_SYSTEM_PROMPT,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": json.dumps(cleaned_eval_json),
-                    }
-                ],
+                "messages": [{"role": "user", "content": content}],
             },
             route_name="llm_review",
         )
         if response is None:
-            return None, request_error or "Anthropic request failed"
+            return None
 
-        parsed, parse_error = _parse_anthropic_json_response(response)
-        if parsed is None:
-            return None, parse_error or "unable to parse model JSON output"
-        return parsed, None
-    except Exception as exc:
-        return None, f"{type(exc).__name__}: {exc}"
+        parsed, _ = _parse_anthropic_json_response(response)
+        return parsed
+    except Exception:
+        return None
 
 
-def llm_verify(eval_json: dict, llm1_output: dict) -> dict | None:
-    result, _ = _llm_verify_with_error(eval_json, llm1_output)
-    return result
-
-
-def _llm_verify_with_error(eval_json: dict, llm1_output: dict) -> tuple[dict | None, str | None]:
+def llm_verify(
+    verified_facts: dict,
+    llm1_output: dict,
+) -> dict | None:
+    """
+    Call LLM2 (verifier) with verified_facts and the analyst's output.
+    LLM2 no longer receives raw price or seller history arrays.
+    Returns the parsed JSON response or None.
+    """
     try:
         api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
         if not api_key:
-            return None, "ANTHROPIC_API_KEY missing"
+            return None
 
-        llm2_model = os.getenv("ANTHROPIC_LLM2_MODEL", "claude-haiku-4-5-20251001").strip() or "claude-haiku-4-5-20251001"
-        response, request_error = _post_anthropic_messages(
+        llm2_model = (
+            os.getenv("ANTHROPIC_LLM2_MODEL", "claude-sonnet-4-20250514").strip()
+            or "claude-sonnet-4-20250514"
+        )
+        response, _ = _post_anthropic_messages(
             api_key=api_key,
             payload={
                 "model": llm2_model,
                 "max_tokens": 1000,
+                "temperature": 0,
                 "system": LLM2_SYSTEM_PROMPT,
                 "messages": [
                     {
                         "role": "user",
                         "content": json.dumps(
                             {
-                                "raw_data": eval_json,
+                                "verified_facts": verified_facts,
                                 "analyst_output": llm1_output,
-                            }
+                            },
+                            indent=2,
                         ),
                     }
                 ],
@@ -123,21 +573,21 @@ def _llm_verify_with_error(eval_json: dict, llm1_output: dict) -> tuple[dict | N
             route_name="llm_verify",
         )
         if response is None:
-            return None, request_error or "Anthropic request failed"
+            return None
 
-        parsed, parse_error = _parse_anthropic_json_response(response)
-        if parsed is None:
-            return None, parse_error or "unable to parse model JSON output"
-        return parsed, None
-    except Exception as exc:
-        return None, f"{type(exc).__name__}: {exc}"
+        parsed, _ = _parse_anthropic_json_response(response)
+        return parsed
+    except Exception:
+        return None
 
 
 def log_llm_run(
-    eval_json: dict,
-    llm1_output: dict,
-    llm2_output: dict,
+    verified_facts: dict,
+    llm1_output: dict | None,
+    llm2_output: dict | None,
     final_decision: PolicyDecision,
+    *,
+    graph_image_fetched: bool = False,
 ) -> None:
     project_root = Path(__file__).resolve().parent.parent
     logs_dir = project_root / "llm_logs"
@@ -146,17 +596,19 @@ def log_llm_run(
     next_id = _next_log_id(logs_dir)
     file_path = logs_dir / f"llm_run_{next_id:04d}.json"
 
-    if is_dataclass(final_decision):
-        final_decision_dict = asdict(final_decision)
-    else:
-        final_decision_dict = dict(getattr(final_decision, "__dict__", {}))
-
     payload = {
-        "eval_json": eval_json,
-        "llm1_output": llm1_output,
-        "llm2_output": llm2_output,
-        "final_decision": final_decision_dict,
         "timestamp_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "graph_image_fetched": graph_image_fetched,
+        "verified_facts": verified_facts,
+        "llm1_output": llm1_output if llm1_output is not None else {},
+        "llm2_output": llm2_output if llm2_output is not None else {},
+        "final_decision": {
+            "decision": final_decision.decision,
+            "recommended_qty": final_decision.recommended_qty,
+            "downside_risk": final_decision.downside_risk,
+            "needs_human_review": final_decision.needs_human_review,
+            "reasons": list(final_decision.reasons),
+        },
     }
     file_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
@@ -165,117 +617,118 @@ def llm_decision_pipeline(
     decision: PolicyDecision,
     keepa: KeepaMetrics,
     row_data: dict,
+    fee_context: dict | None = None,
 ) -> PolicyDecision:
-    eval_json = _build_eval_json(decision=decision, keepa=keepa, row_data=row_data)
-    llm1_output: dict[str, Any] = {}
-    llm2_output: dict[str, Any] = {}
-
-    reason_strings = decision.reasons or []
-    reason_blob = " | ".join(reason_strings)
-
-    bypass = False
+    # ── Step 1: hard bypass ───────────────────────────────────────────────────
     if decision.decision in {"BUY", "TEST"}:
-        bypass = True
-    if _contains_phrase(reason_blob, "IP Clean"):
-        bypass = True
-    if _contains_phrase(reason_blob, "ASIN is gated"):
-        bypass = True
-    if _contains_phrase(reason_blob, "Exact Match"):
-        bypass = True
-    if _contains_phrase(reason_blob, "Est Sales / Month"):
-        bypass = True
+        return decision
+    _skip_phrases = ["IP Clean", "ASIN is gated", "Exact Match", "Est Sales / Month"]
+    for reason in decision.reasons:
+        if any(skip in reason for skip in _skip_phrases):
+            return decision
 
-    if bypass:
-        llm1_output = {"status": "bypass", "reason": "hard bypass condition met"}
-        return _finalize_with_log(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=decision,
+    # ── Step 2: activation check ──────────────────────────────────────────────
+    _trigger_phrases = ["Buy Box 90d Low", "Offer Count Delta"]
+    should_activate = (
+        (decision.decision == "DEFER" and decision.needs_human_review)
+        or (
+            decision.decision == "REJECT"
+            and any(
+                trigger in reason
+                for reason in decision.reasons
+                for trigger in _trigger_phrases
+            )
         )
-
-    activated = False
-    if decision.decision == "DEFER" and bool(decision.needs_human_review):
-        activated = True
-    if decision.decision == "REJECT" and (
-        _contains_phrase(reason_blob, "Buy Box 90d Low")
-        or _contains_phrase(reason_blob, "Offer Count Delta")
-    ):
-        activated = True
-
-    if not activated:
-        llm1_output = {"status": "bypass", "reason": "activation conditions not met"}
-        return _finalize_with_log(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=decision,
-        )
-
-    llm1_result, llm1_error = _llm_review_with_error(eval_json)
-    if llm1_result is None:
-        llm1_output = {
-            "status": "failed",
-            "reason": f"llm_review failed: {llm1_error or 'unknown'}",
-        }
-        fallback = _copy_policy_decision(decision, needs_human_review=True)
-        return _finalize_with_log(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=fallback,
-        )
-    llm1_output = llm1_result
-
-    llm2_result, llm2_error = _llm_verify_with_error(eval_json, llm1_output)
-    if llm2_result is None:
-        llm2_output = {
-            "status": "failed",
-            "reason": f"llm_verify failed: {llm2_error or 'unknown'}",
-        }
-        fallback = _copy_policy_decision(decision, needs_human_review=True)
-        return _finalize_with_log(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=fallback,
-        )
-    llm2_output = llm2_result
-
-    overall_verified, confidence = _extract_verify_fields(llm2_output)
-    if overall_verified and confidence >= 0.80:
-        llm_policy = _build_llm_policy_decision(
-            baseline=decision,
-            llm1_output=llm1_output,
-            needs_human_review=False,
-        )
-        return _finalize_with_log(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=llm_policy,
-        )
-
-    if overall_verified and 0.50 <= confidence < 0.80:
-        llm_policy = _build_llm_policy_decision(
-            baseline=decision,
-            llm1_output=llm1_output,
-            needs_human_review=True,
-        )
-        return _finalize_with_log(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=llm_policy,
-        )
-
-    fallback = _copy_policy_decision(decision, needs_human_review=True)
-    return _finalize_with_log(
-        eval_json=eval_json,
-        llm1_output=llm1_output,
-        llm2_output=llm2_output,
-        final_decision=fallback,
     )
+    if not should_activate:
+        return decision
+
+    # ── Step 3: build verified facts ─────────────────────────────────────────
+    roi_pct = _parse_number(row_data.get("ROI %"))
+    break_even_floor: float | None = (
+        _estimate_break_even_floor(row_data, roi_pct)
+        if roi_pct is not None
+        else None
+    )
+    verified_facts = build_verified_facts(
+        keepa=keepa,
+        row_data=row_data,
+        gate_reasons=list(decision.reasons),
+        break_even_floor=break_even_floor,
+        amazon_fees_total=(fee_context or {}).get("amazon_fees_total"),
+    )
+
+    # ── Step 4: fetch graph image (graceful degrade) ──────────────────────────
+    asin = str(row_data.get("ASIN") or "").strip().upper()
+    keepa_api_key = os.getenv("KEEPA_API_KEY", "").strip()
+    graph_image_base64 = fetch_graph_image(asin=asin, keepa_api_key=keepa_api_key)
+
+    # ── Step 5: LLM 1 ────────────────────────────────────────────────────────
+    llm1_output = llm_review(
+        verified_facts=verified_facts,
+        graph_image_base64=graph_image_base64,
+        gate_reasons=list(decision.reasons),
+    )
+    _image_fetched = graph_image_base64 is not None
+    if llm1_output is None:
+        log_llm_run(verified_facts, None, None, decision, graph_image_fetched=_image_fetched)
+        return _copy_policy_decision(decision, needs_human_review=True)
+
+    # ── Step 6: Python citation validator ─────────────────────────────────────
+    validation = validate_citations(llm1_output, verified_facts)
+    if not validation["all_valid"]:
+        log_llm_run(verified_facts, llm1_output, {"validation_failed": validation}, decision, graph_image_fetched=_image_fetched)
+        return _copy_policy_decision(decision, needs_human_review=True)
+
+    # ── Step 7: LLM 2 ────────────────────────────────────────────────────────
+    llm2_output = llm_verify(
+        verified_facts=verified_facts,
+        llm1_output=llm1_output,
+    )
+    if llm2_output is None:
+        log_llm_run(verified_facts, llm1_output, None, decision, graph_image_fetched=_image_fetched)
+        return _copy_policy_decision(decision, needs_human_review=True)
+
+    # ── Step 8: apply confidence thresholds ───────────────────────────────────
+    overall_verified, confidence = _extract_verify_fields(llm2_output)
+    llm2_decision = _normalize_decision_name(llm2_output.get("final_decision"))
+
+    final_dec = llm2_decision or decision.decision
+    if final_dec in {"BUY", "TEST"}:
+        llm_qty, llm_qty_summary, _ = compute_recommended_qty(
+            final_dec, keepa, row_data, decision.downside_risk
+        )
+    else:
+        llm_qty, llm_qty_summary = 0, ""
+
+    final_reasons = list(decision.reasons)
+    if llm_qty_summary:
+        final_reasons.append(llm_qty_summary)
+
+    if overall_verified and confidence > 0.80:
+        final = PolicyDecision(
+            decision=final_dec,
+            recommended_qty=llm_qty,
+            downside_risk=decision.downside_risk,
+            needs_human_review=False,
+            reasons=final_reasons,
+            audit_fields=dict(decision.audit_fields),
+        )
+    elif overall_verified and 0.50 <= confidence <= 0.80:
+        final = PolicyDecision(
+            decision=final_dec,
+            recommended_qty=llm_qty,
+            downside_risk=decision.downside_risk,
+            needs_human_review=True,
+            reasons=final_reasons,
+            audit_fields=dict(decision.audit_fields),
+        )
+    else:
+        final = _copy_policy_decision(decision, needs_human_review=True)
+
+    # ── Step 9: log and return ────────────────────────────────────────────────
+    log_llm_run(verified_facts, llm1_output, llm2_output, final, graph_image_fetched=_image_fetched)
+    return final
 
 
 def _parse_anthropic_json_response(response: requests.Response) -> tuple[dict | None, str | None]:
@@ -440,72 +893,7 @@ def _next_log_id(logs_dir: Path) -> int:
     return max_id + 1
 
 
-def _finalize_with_log(
-    eval_json: dict,
-    llm1_output: dict,
-    llm2_output: dict,
-    final_decision: PolicyDecision,
-) -> PolicyDecision:
-    enriched_decision = _attach_llm_outputs_to_decision(
-        decision=final_decision,
-        llm1_output=llm1_output,
-        llm2_output=llm2_output,
-    )
-    try:
-        log_llm_run(
-            eval_json=eval_json,
-            llm1_output=llm1_output,
-            llm2_output=llm2_output,
-            final_decision=enriched_decision,
-        )
-    except Exception:
-        pass
-    return enriched_decision
-
-
-def _attach_llm_outputs_to_decision(
-    decision: PolicyDecision,
-    llm1_output: dict,
-    llm2_output: dict,
-) -> PolicyDecision:
-    audit_fields = dict(decision.audit_fields)
-    audit_fields[LLM_REVIEW_OUTPUT_AUDIT_FIELD] = _format_llm_review_output(
-        llm1_output=llm1_output,
-        llm2_output=llm2_output,
-    )
-    return PolicyDecision(
-        decision=decision.decision,
-        recommended_qty=decision.recommended_qty,
-        downside_risk=decision.downside_risk,
-        needs_human_review=decision.needs_human_review,
-        reasons=list(decision.reasons),
-        audit_fields=audit_fields,
-    )
-
-
-def _format_llm_review_output(llm1_output: dict, llm2_output: dict) -> str:
-    try:
-        llm1_text = json.dumps(llm1_output or {}, ensure_ascii=False, separators=(",", ":"))
-    except Exception:
-        llm1_text = str(llm1_output)
-    try:
-        llm2_text = json.dumps(llm2_output or {}, ensure_ascii=False, separators=(",", ":"))
-    except Exception:
-        llm2_text = str(llm2_output)
-
-    combined = f"LLM1={llm1_text}\nLLM2={llm2_text}"
-    if len(combined) <= LLM_REVIEW_OUTPUT_MAX_CHARS:
-        return combined
-    return combined[: LLM_REVIEW_OUTPUT_MAX_CHARS - 14] + "\n...[truncated]"
-
-
-def _contains_phrase(text: str, phrase: str) -> bool:
-    return phrase.lower() in text.lower()
-
-
 def _extract_verify_fields(llm2_output: dict) -> tuple[bool, float]:
-    import sys
-
     overall_verified_raw = llm2_output.get("overall_verified")
     if isinstance(overall_verified_raw, bool):
         overall_verified = overall_verified_raw
@@ -526,61 +914,6 @@ def _extract_verify_fields(llm2_output: dict) -> tuple[bool, float]:
     return overall_verified, confidence
 
 
-def _build_llm_policy_decision(
-    baseline: PolicyDecision,
-    llm1_output: dict,
-    needs_human_review: bool,
-) -> PolicyDecision:
-    llm_block = llm1_output.get("final_decision")
-    decision_value: str | None = None
-    recommended_qty: int | None = None
-    downside_risk: str | None = None
-    reasons_value: list[str] | None = None
-
-    if isinstance(llm_block, dict):
-        decision_value = _normalize_decision_name(llm_block.get("decision"))
-        recommended_qty = _parse_int(llm_block.get("recommended_qty"))
-        downside_risk = _normalize_risk(llm_block.get("downside_risk"))
-        reasons_value = _normalize_reasons(
-            llm_block.get("reasons"),
-            llm_block.get("reason"),
-        )
-    elif isinstance(llm_block, str):
-        decision_value = _normalize_decision_name(llm_block)
-
-    if decision_value is None:
-        decision_value = _normalize_decision_name(llm1_output.get("decision"))
-    if decision_value is None:
-        decision_value = baseline.decision
-
-    if recommended_qty is None:
-        recommended_qty = _parse_int(llm1_output.get("recommended_qty"))
-    if recommended_qty is None:
-        recommended_qty = baseline.recommended_qty
-
-    if downside_risk is None:
-        downside_risk = _normalize_risk(llm1_output.get("downside_risk"))
-    if downside_risk is None:
-        downside_risk = baseline.downside_risk
-
-    if reasons_value is None:
-        reasons_value = _normalize_reasons(
-            llm1_output.get("reasons"),
-            llm1_output.get("reason"),
-        )
-    if reasons_value is None:
-        reasons_value = list(baseline.reasons)
-
-    return PolicyDecision(
-        decision=decision_value,
-        recommended_qty=max(0, int(recommended_qty)),
-        downside_risk=downside_risk,
-        needs_human_review=bool(needs_human_review),
-        reasons=reasons_value,
-        audit_fields=dict(baseline.audit_fields),
-    )
-
-
 def _copy_policy_decision(decision: PolicyDecision, needs_human_review: bool) -> PolicyDecision:
     return PolicyDecision(
         decision=decision.decision,
@@ -597,36 +930,6 @@ def _normalize_decision_name(value: Any) -> str | None:
     if raw in {"BUY", "TEST", "REJECT", "DEFER"}:
         return raw
     return None
-
-
-def _normalize_risk(value: Any) -> str | None:
-    raw = str(value or "").strip().upper()
-    if raw in {"LOW", "MED", "HIGH"}:
-        return raw
-    return None
-
-
-def _normalize_reasons(primary: Any, secondary: Any) -> list[str] | None:
-    reasons: list[str] = []
-    if isinstance(primary, list):
-        for item in primary:
-            text = str(item).strip()
-            if text:
-                reasons.append(text)
-    elif isinstance(primary, str) and primary.strip():
-        reasons.append(primary.strip())
-    if not reasons and isinstance(secondary, str) and secondary.strip():
-        reasons.append(secondary.strip())
-    return reasons or None
-
-
-def _parse_int(value: Any) -> int | None:
-    if value is None:
-        return None
-    try:
-        return int(str(value).strip())
-    except (TypeError, ValueError):
-        return None
 
 
 def _parse_number(value: Any) -> float | None:
@@ -650,92 +953,3 @@ def _keepa_minutes_to_iso(keepa_minutes: int) -> str:
     return dt.isoformat().replace("+00:00", "Z")
 
 
-def _build_eval_json(decision: PolicyDecision, keepa: KeepaMetrics, row_data: dict) -> dict[str, Any]:
-    now = datetime.now(timezone.utc).replace(microsecond=0)
-    asin = str(row_data.get("ASIN") or "").strip().upper()
-
-    gate_decision = {
-        "qualified": decision.decision in {"BUY", "TEST"},
-        "decision": decision.decision,
-        "reason": decision.reasons_text(),
-        "reasons": list(decision.reasons),
-        "recommended_qty": decision.recommended_qty,
-        "downside_risk": decision.downside_risk,
-        "needs_human_review": decision.needs_human_review,
-        "audit_fields": dict(decision.audit_fields),
-    }
-
-    key_metrics = asdict(keepa)
-    key_metrics.pop("buy_box_price_history", None)
-    key_metrics.pop("buy_box_seller_history", None)
-
-    buy_box_price_history: list[dict[str, Any]] = []
-    for ts, price in keepa.buy_box_price_history:
-        buy_box_price_history.append(
-            {
-                "keepa_minutes": int(ts),
-                "timestamp_utc": _keepa_minutes_to_iso(int(ts)),
-                "price_usd": float(price),
-            }
-        )
-
-    buy_box_seller_history: list[dict[str, Any]] = []
-    for ts, seller_id in keepa.buy_box_seller_history:
-        buy_box_seller_history.append(
-            {
-                "keepa_minutes": int(ts),
-                "timestamp_utc": _keepa_minutes_to_iso(int(ts)),
-                "seller_id": str(seller_id),
-            }
-        )
-
-    profitability_errors_raw = str(row_data.get("Profitability Calc Error") or "").strip()
-    profitability_errors = [item.strip() for item in profitability_errors_raw.split(";") if item.strip()]
-
-    fee_context = {
-        "estimated_sell_price_mid_bb": _parse_number(row_data.get("Estimated Sell Price (Mid BB)")),
-        "buy_box_range_current": row_data.get("Buy Box Range (Current)") or keepa.buy_box_range_current,
-        "amazon_fees_total": _parse_number(row_data.get("Amazon Fees Total")),
-        "referral_fee": _parse_number(row_data.get("Referral Fee")),
-        "fba_fulfillment_fee": _parse_number(row_data.get("FBA Fulfillment Fee")),
-        "fee_breakdown": {},
-        "package_weight_grams": keepa.package_weight_grams,
-        "inbound_shipping_rate_per_lb": _parse_number(os.getenv("INBOUND_SHIPPING_USD_PER_LB")) or 0.77,
-        "inbound_shipping_fee": _parse_number(row_data.get("Inbound Shipping Fee")),
-        "landed_cost_per_unit": (
-            _parse_number(row_data.get("Landed Cost / Unit (all-in)"))
-            or _parse_number(row_data.get("Landed Cost / Unit"))
-        ),
-        "profit_per_unit": _parse_number(row_data.get("Profit / Unit")),
-        "roi_percent": _parse_number(row_data.get("ROI %")),
-        "margin_percent": _parse_number(row_data.get("Margin %")),
-        "errors": profitability_errors,
-    }
-
-    eval_json: dict[str, Any] = {
-        "eval_id": None,
-        "asin": asin,
-        "created_at_utc": now.isoformat().replace("+00:00", "Z"),
-        "pipeline_context": {
-            "policy_version": str(row_data.get("Policy Version") or os.getenv("POLICY_VERSION", "")).strip(),
-            "keepa_domain_id": int(_parse_number(os.getenv("KEEPA_DOMAIN_ID")) or 1),
-            "marketplace_id": str(os.getenv("SP_API_MARKETPLACE_ID", "ATVPDKIKX0DER")).strip() or "ATVPDKIKX0DER",
-            "currency": "USD",
-        },
-        "gate_decision": gate_decision,
-        "key_metrics": key_metrics,
-        "raw_history": {
-            "buy_box_price_history": buy_box_price_history,
-            "buy_box_seller_history": buy_box_seller_history,
-        },
-        "fee_context": fee_context,
-        "errors": [],
-        "manual_label": {
-            "my_decision": None,
-            "gate_correct": None,
-            "my_reasoning": None,
-            "gate_missed": None,
-            "expected_llm_override": None,
-        },
-    }
-    return eval_json

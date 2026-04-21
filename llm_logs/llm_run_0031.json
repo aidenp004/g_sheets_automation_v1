@@ -1,0 +1,192 @@
+{
+  "timestamp_utc": "2026-04-17T21:27:11Z",
+  "graph_image_fetched": true,
+  "verified_facts": {
+    "bb_90d": {
+      "low": 19.52,
+      "low_timestamp_unix": 1772176320,
+      "low_present_in_history": false,
+      "avg": 36.95,
+      "amazon_pct": 0.0,
+      "fba_share_pct": 99.8,
+      "stability": "STABLE"
+    },
+    "history_30d": {
+      "window_start": "2026-03-18T21:24:00Z",
+      "window_end": "2026-04-17T20:30:00Z",
+      "entry_count": 76,
+      "low": 32.85,
+      "high": 37.63,
+      "avg": 35.88,
+      "days_below_breakeven": 0
+    },
+    "price_events": [
+      {
+        "event_id": "evt_001",
+        "type": "absolute_minimum",
+        "timestamp": "2026-03-19T07:44:00Z",
+        "price": 32.85,
+        "prior": {
+          "timestamp": "2026-03-19T06:42:00Z",
+          "price": 32.97
+        },
+        "next": {
+          "timestamp": "2026-03-19T08:46:00Z",
+          "price": 35.55
+        },
+        "recovery_minutes": 62
+      },
+      {
+        "event_id": "evt_002",
+        "type": "local_minimum",
+        "timestamp": "2026-03-19T10:50:00Z",
+        "price": 33.91,
+        "prior": {
+          "timestamp": "2026-03-19T09:48:00Z",
+          "price": 36.06
+        },
+        "next": {
+          "timestamp": "2026-03-19T12:56:00Z",
+          "price": 35.56
+        },
+        "recovery_minutes": 126
+      },
+      {
+        "event_id": "evt_003",
+        "type": "local_minimum",
+        "timestamp": "2026-03-19T19:00:00Z",
+        "price": 34.9,
+        "prior": {
+          "timestamp": "2026-03-19T18:04:00Z",
+          "price": 35.13
+        },
+        "next": {
+          "timestamp": "2026-03-19T21:12:00Z",
+          "price": 35.69
+        },
+        "recovery_minutes": 132
+      },
+      {
+        "event_id": "evt_004",
+        "type": "local_minimum",
+        "timestamp": "2026-04-17T08:08:00Z",
+        "price": 35.46,
+        "prior": {
+          "timestamp": "2026-04-17T07:12:00Z",
+          "price": 35.51
+        },
+        "next": {
+          "timestamp": "2026-04-17T09:40:00Z",
+          "price": 35.75
+        },
+        "recovery_minutes": 92
+      },
+      {
+        "event_id": "evt_005",
+        "type": "local_minimum",
+        "timestamp": "2026-04-17T12:46:00Z",
+        "price": 35.55,
+        "prior": {
+          "timestamp": "2026-04-17T11:44:00Z",
+          "price": 35.56
+        },
+        "next": {
+          "timestamp": "2026-04-17T13:48:00Z",
+          "price": 35.56
+        },
+        "recovery_minutes": 62
+      },
+      {
+        "event_id": "evt_006",
+        "type": "local_minimum",
+        "timestamp": "2026-03-20T02:20:00Z",
+        "price": 35.56,
+        "prior": {
+          "timestamp": "2026-03-20T01:20:00Z",
+          "price": 35.74
+        },
+        "next": {
+          "timestamp": "2026-03-20T02:26:00Z",
+          "price": 36.24
+        },
+        "recovery_minutes": 6
+      },
+      {
+        "event_id": "evt_007",
+        "type": "sharp_recovery",
+        "timestamp": "2026-03-19T07:44:00Z",
+        "price": 32.85,
+        "prior": {
+          "timestamp": "2026-03-19T06:42:00Z",
+          "price": 32.97
+        },
+        "next": {
+          "timestamp": "2026-03-19T08:46:00Z",
+          "price": 35.55
+        },
+        "recovery_minutes": 62
+      }
+    ],
+    "competition": {
+      "fba_sellers_near_bb": 2,
+      "fbm_sellers_near_bb": 0,
+      "total_near_bb": 2,
+      "weighted_stock": 9.0,
+      "offer_count_delta_14d": 4,
+      "est_sales_month": 100
+    },
+    "profitability": {
+      "current_bb_price": 35.67,
+      "landed_cost": 17.34,
+      "roi_percent": 33.97,
+      "margin_percent": 15.9,
+      "breakeven_floor": 27.65,
+      "roi_at_history_30d_low": 13.84,
+      "roi_at_bb_90d_low": null
+    }
+  },
+  "llm1_output": {
+    "gate_assessments": [
+      {
+        "gate_reason": "Buy Box 90d Low is below estimated break-even floor (price downside risk).",
+        "assessment": "ANOMALY",
+        "cited_facts": [
+          "verified_facts.bb_90d.low_present_in_history",
+          "verified_facts.history_30d.low",
+          "evt_001",
+          "verified_facts.profitability.roi_at_history_30d_low"
+        ],
+        "cited_evidence": "The 90d low of $19.52 at verified_facts.bb_90d.low is not present in the visible history window per verified_facts.bb_90d.low_present_in_history being false. The visible 30d minimum of $32.85 at verified_facts.history_30d.low recovered within 62 minutes per evt_001.recovery_minutes, indicating an anomalous drop. The ROI at the visible history low is 13.84% per verified_facts.profitability.roi_at_history_30d_low, providing reasonable downside protection.",
+        "override": "DISCOUNT"
+      }
+    ],
+    "revised_decision": "BUY",
+    "buy_risk": 0.25,
+    "reasoning": "The 90d low triggering the gate is not visible in recent history per verified_facts.bb_90d.low_present_in_history being false, while the visible minimum at verified_facts.history_30d.low of $32.85 recovered rapidly in evt_001.recovery_minutes of 62 minutes. With verified_facts.profitability.roi_at_history_30d_low at 13.84% and only verified_facts.competition.fba_sellers_near_bb of 2 sellers, downside risk is manageable."
+  },
+  "llm2_output": {
+    "verification_results": [
+      {
+        "gate_reason": "Buy Box 90d Low is below estimated break-even floor (price downside risk).",
+        "evidence_verified": true,
+        "evidence_notes": "All cited facts verified: bb_90d.low_present_in_history is false, history_30d.low is 32.85, evt_001 recovery_minutes is 62, roi_at_history_30d_low is 13.84. Analyst correctly acknowledged missing 90d low and reasoned from visible history.",
+        "logic_consistent": true,
+        "logic_notes": "ANOMALY assessment with DISCOUNT override follows rules - recovery_minutes of 62 is under 2880. BUY decision with buy_risk 0.25 is under 0.33 threshold."
+      }
+    ],
+    "overall_verified": true,
+    "confidence": 0.95,
+    "final_decision": "BUY",
+    "verification_notes": "All evidence verified and reasoning follows rules correctly. Analyst properly handled missing 90d low data."
+  },
+  "final_decision": {
+    "decision": "BUY",
+    "recommended_qty": 21,
+    "downside_risk": "MED",
+    "needs_human_review": false,
+    "reasons": [
+      "Buy Box 90d Low is below estimated break-even floor (price downside risk).",
+      "Qty model=AddrFBA 99.8/mo, EffComp 3.50, Conf 0.72 (base 0.69 * stock 1.05), Entrant 20.7/mo."
+    ]
+  }
+}
